@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PYTHON_VERSION: "3.7"
+      PYTHON_VERSION: "3.9"
       PYTHON_VERSION_MAX: ""  # Optional maximum Python version (empty by default)
       REPO_TOPICS: "sphinx sphinx-extension github links references"  # Space-separated topics
 

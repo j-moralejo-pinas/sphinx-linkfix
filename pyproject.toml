@@ -14,16 +14,27 @@ keywords = ["sphinx", "sphinx-extension", "github", "links", "references"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Environment :: Plugins",
+    "Topic :: Documentation",
+    "Topic :: Documentation :: Sphin",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Text Processing :: Markup :: ReStructuredText",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dependencies = [
-    # Add your project dependencies here
+    "sphinx",
+    "docutils",
 ]
 
 [project.urls]
 Homepage = "https://github.com/j-moralejo-pinas/sphinx-linkfix"
+Changelog = "https://sphinx-linkfix.readthedocs.io/en/latest/CHANGELOG.html"
 Source = "https://github.com/j-moralejo-pinas/sphinx-linkfix"
+Documentation = "https://sphinx-linkfix.readthedocs.io/"
 Tracker = "https://github.com/j-moralejo-pinas/sphinx-linkfix/issues"
 
 [tool.setuptools]

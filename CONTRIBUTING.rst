@@ -24,7 +24,7 @@ Getting Started
 Prerequisites
 -------------
 
-- Python 3.7
+- Python 3.9
 - Git
 - Docker (optional, for containerized development)
 - Conda or similar environment manager (recommended)
@@ -50,7 +50,7 @@ Environment Setup
 
 .. code-block:: bash
 
-    conda create -n sphinx-linkfix python=3.7
+    conda create -n sphinx-linkfix python=3.9
     conda activate sphinx-linkfix
 
 2. Install the package in development mode:
@@ -667,7 +667,7 @@ Use this template for any functional issues, including performance problems, cra
 
     ## Environment
     - **OS**: [e.g., Ubuntu 22.04, Windows 11, macOS 13.0]
-    - **Python Version**: [e.g., 3.7.y]
+    - **Python Version**: [e.g., 3.9.y]
     - **Project Version**: [e.g., 1.0.0 or commit hash if using dev]
     - **Conda Environment**: [e.g., sphinx-linkfix]
     - **Hardware** (for performance issues): [CPU, RAM, relevant specs]

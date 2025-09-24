@@ -12,7 +12,7 @@ Contents
    :caption: Getting Started
 
    Overview <README>
-   Installation & Quick Start <installation>
+   Installation <installation>
 
 .. toctree::
    :maxdepth: 2
