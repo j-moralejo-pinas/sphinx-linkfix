@@ -9,7 +9,7 @@ This guide provides step-by-step instructions for installing and setting up the 
     :depth: 2
 
 Prerequisites
--------------
+=============
 
 Before installing the project, ensure you have the following requirements:
 
@@ -74,9 +74,9 @@ Development Setup
         conda create -n sphinx-linkfix-dev python=3.9
         conda activate sphinx-linkfix-dev
 
-3. **Install in Development Mode**
+3. **Install in Development Mode**: Install the package with development dependencies
 
-    Install the package with development dependencies::
+    ::
 
         pip install -e ".[dev,docs]"
 
@@ -93,15 +93,15 @@ Development Setup
    * ``sphinx`` - Documentation generation
    * ``sphinx-autoapi`` - Automatic API documentation generation
 
-4. **Set Up Pre-commit Hooks**
+4. **Set Up Pre-commit Hooks**: Install pre-commit hooks to ensure code quality
 
-    Install pre-commit hooks to ensure code quality::
+    ::
 
         pre-commit install
 
-5. **Configure Type Checking**
+5. **Configure Type Checking**: Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root
 
-    Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root::
+    ::
 
         {
             "venvPath": "/path/to/your/conda/envs",
@@ -110,17 +110,17 @@ Development Setup
 
     Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
 
-6. **Configure Environment**
+6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable
 
-    Set the ``PYTHONPATH`` environment variable::
+    ::
 
         export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
     Or add this to your shell profile (``~/.bashrc``, ``~/.zshrc``, etc.).
 
-7. **Verify Installation**
+7. **Verify Installation**: Test that the development installation was successful
 
-    Test that the development installation was successful::
+    ::
 
         python -c "import sphinx_linkfix; print('Development installation successful!')"
         pytest --version
