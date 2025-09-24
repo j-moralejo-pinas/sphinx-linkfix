@@ -27,6 +27,7 @@ Contents
    License <LICENSE>
    Authors <AUTHORS>
    Changelog <CHANGELOG>
+   Code of Conduct <CODE_OF_CONDUCT>
 
 .. toctree::
    :maxdepth: 2
