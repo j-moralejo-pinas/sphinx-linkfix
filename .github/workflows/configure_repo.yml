@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION: "3.7"
       PYTHON_VERSION_MAX: ""  # Optional maximum Python version (empty by default)
-      REPO_TOPICS: "python automation"  # Space-separated topics
+      REPO_TOPICS: "sphinx sphinx-extension github links references"  # Space-separated topics
 
     steps:
       - uses: actions/checkout@v4
