@@ -1,0 +1,206 @@
+name: configure_repo
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write  # Need write permission to commit and push changes
+
+jobs:
+  config-repo:
+    name: config-repo
+    # Optional safety gate. Keep if you stored ADMIN_TOKEN in env "prod".
+    environment: main
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION_MAX: ""  # Optional maximum Python version (empty by default)
+      REPO_TOPICS: "python automation"  # Space-separated topics
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure jq is available
+        run: |
+          if ! command -v jq >/dev/null; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
+      # 1) Get current repo info and initialize project
+      - name: Get repo info and initialize project
+        id: init
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Get current repository information
+          REPO_INFO=$(gh api "/repos/$GITHUB_REPOSITORY" -H "Accept: application/vnd.github+json")
+          REPO_NAME=$(echo "$REPO_INFO" | jq -r '.name')
+          REPO_DESC=$(echo "$REPO_INFO" | jq -r '.description // ""')
+
+          echo "Repository name: $REPO_NAME"
+          echo "Repository description: $REPO_DESC"
+          echo "Python version: $PYTHON_VERSION"
+          echo "Python max version: ${PYTHON_VERSION_MAX:-'Not specified'}"
+          echo "Topics: ${REPO_TOPICS:-'Not specified'}"
+
+          # Run the init_project.sh script with repo name, description, Python versions, and topics
+          chmod +x ./init_project.sh
+          ./init_project.sh "$REPO_NAME" "$REPO_DESC" "$PYTHON_VERSION" "$PYTHON_VERSION_MAX" "$REPO_TOPICS"
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Commit changes if there are any
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git add .
+            git commit -m "Initialize project with name '$REPO_NAME' and Python $PYTHON_VERSION"
+            git push origin main
+            echo "Project initialized and changes committed"
+          else
+            echo "No changes to commit"
+          fi
+
+          # Set outputs for later steps
+          REPO_SLUG=$(echo "$REPO_INFO" | jq -r '.full_name')
+          echo "slug=$REPO_SLUG" >> "$GITHUB_OUTPUT"
+          echo "REPO_SLUG=$REPO_SLUG" >> "$GITHUB_ENV"
+
+      # 2) Core settings (only non-defaults) - now with existing values
+      - name: Core repo settings
+        id: core
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          BODY=$(jq -n \
+            '{has_wiki:false,
+              allow_auto_merge:true,
+              allow_update_branch:true,
+              delete_branch_on_merge:true}')
+
+          gh api --method PATCH -H "Accept: application/vnd.github+json" \
+            "/repos/$GITHUB_REPOSITORY" \
+            --input <(printf '%s' "$BODY")
+
+      # 3) Topics
+      - name: Topics
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Use REPO_SLUG from initialization step
+          REPO_SLUG="${REPO_SLUG:-$GITHUB_REPOSITORY}"
+
+          # Convert space-separated topics to JSON array
+          if [ -n "${REPO_TOPICS:-}" ]; then
+            REPO_TOPICS_JSON=$(echo "$REPO_TOPICS" | tr ' ' '\n' | jq -R . | jq -s .)
+            echo "Topics to set: $REPO_TOPICS_JSON"
+          else
+            REPO_TOPICS_JSON='[]'
+            echo "No topics specified, setting empty array"
+          fi
+
+          gh api --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/$REPO_SLUG/topics" \
+            --input <(jq -n --argjson names "$REPO_TOPICS_JSON" '{names:$names}')
+
+      # 4) Workflow token permissions
+      - name: Workflow permissions
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO_SLUG="${REPO_SLUG:-$GITHUB_REPOSITORY}"
+
+          gh api -X PUT "/repos/$REPO_SLUG/actions/permissions/workflow" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            --input <(jq -n '{default_workflow_permissions:"write"}')
+
+      # 5) Rulesets (correct schema). Never call /repos//rulesets again.
+      - name: Create or update rulesets
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          REPO_SLUG="${REPO_SLUG:-$GITHUB_REPOSITORY}"
+          API=(-H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+
+          find_ruleset_id_by_name() {
+            local NAME="$1"
+            gh api "/repos/$REPO_SLUG/rulesets" "${API[@]}" \
+              | jq -r ".[] | select(.name==\"$NAME\") | .id" | head -n1
+          }
+
+          mk_checks_json() {
+            jq -R -s 'split("\n") | map(select(length>0)) | map({context:.})'
+          }
+
+          replace_ruleset() {
+            local NAME="$1" BRANCH="$2" ALLOWED_MERGES_JSON="$3"; shift 3
+            local CHECKS_LIST=("$@")
+
+            local CHECKS_JSON
+            CHECKS_JSON=$(printf '%s\n' "${CHECKS_LIST[@]}" | mk_checks_json)
+
+            local BODY
+            BODY=$(jq -n \
+              --arg name "$NAME" \
+              --arg branch "refs/heads/$BRANCH" \
+              --argjson allowed "$ALLOWED_MERGES_JSON" \
+              --argjson checks "$CHECKS_JSON" '
+              {
+                name: $name,
+                target: "branch",
+                enforcement: "active",
+                conditions: { ref_name: { include: [$branch], exclude: [] } },
+                rules: [
+                  { "type": "deletion" },
+                  {
+                    "type": "pull_request",
+                    "parameters": {
+                      "dismiss_stale_reviews_on_push": true,
+                      "require_code_owner_review": true,
+                      "required_approving_review_count": 0,
+                      "required_review_thread_resolution": true,
+                      "require_last_push_approval": false,
+                      "allowed_merge_methods": $allowed
+                    }
+                  },
+                  {
+                    "type": "required_status_checks",
+                    "parameters": {
+                      "do_not_enforce_on_create": false,
+                      "required_status_checks": $checks,
+                      "strict_required_status_checks_policy": true
+                    }
+                  },
+                  { "type": "non_fast_forward" }
+                ]
+              }')
+
+            local ID
+            ID=$(find_ruleset_id_by_name "$NAME" || true)
+            if [ -n "${ID:-}" ]; then
+              gh api -i -X DELETE "/repos/$REPO_SLUG/rulesets/$ID" "${API[@]}" || true
+            fi
+
+            gh api -i -X POST "/repos/$REPO_SLUG/rulesets" "${API[@]}" \
+              --input <(printf '%s' "$BODY")
+          }
+
+          # Main: Merge only, checks: check-source-branch, format, code-quality, test
+          replace_ruleset "Main" "main"  "$(jq -n '["merge"]')" \
+            "call-reusable / check-source-branch" "call-reusable / format" "call-reusable / code-quality" "call-reusable / test"
+
+          # Dev: Merge + Squash, checks: format, test
+          replace_ruleset "Dev"  "dev"   "$(jq -n '["merge","squash"]')" \
+            "call-reusable / format" "call-reusable / test"
