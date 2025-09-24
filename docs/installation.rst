@@ -1,3 +1,4 @@
+==================
 Installation Guide
 ==================
 
@@ -24,30 +25,30 @@ This section is for users who want to use the extension.
 Quick Start
 -----------
 
-1. **Install the Extension**
+1. **Install the Extension**: Install the package using pip
 
-    Install the package using pip::
+    ::
 
         pip install sphinx-linkfix
 
-2. **Configure Sphinx**
+2. **Configure Sphinx**: In your Sphinx ``conf.py`` file, add the extension
 
-    In your Sphinx `conf.py` file, add the extension::
+    ::
+
         extensions = [
-            ...
+            ...,
             'sphinx_linkfix',
         ]
 
-3. **Set Configuration Options (Optional)**
-    You can customize the behavior of the extension by adding the following options to your `conf.py` file:
+3. **Set Configuration Options (Optional)**: You can customize the behavior of the extension by adding the following options to your ``conf.py`` file:
 
     .. code-block:: python
 
         # List of path prefixes to strip from links
-        linkfix_strip_prefixes = ('docs/', 'source/')
+        sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
 
         # List of file extensions to process
-        linkfix_file_extensions = ('.rst', '.md')
+        sphinx_linkfix_file_extensions = ('.rst', '.md')
 
     Adjust these settings as needed for your project structure.
 
@@ -66,9 +67,9 @@ Development Setup
         git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
         cd sphinx-linkfix
 
-2. **Set Up Development Environment**
+2. **Set Up Development Environment**: Create a virtual environment (recommended)
 
-    Create a virtual environment (recommended)::
+    ::
 
         conda create -n sphinx-linkfix-dev python=3.9
         conda activate sphinx-linkfix-dev

@@ -1,6 +1,6 @@
-=============
+==============
 sphinx-linkfix
-=============
+==============
 
 This is the documentation of **sphinx-linkfix project**.
 
@@ -34,11 +34,6 @@ Contents
    :caption: API Reference
 
    API Documentation <autoapi/index>
-
-Indices and tables
-==================
-
-- :ref:`modindex`
 
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
