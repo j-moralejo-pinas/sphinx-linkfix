@@ -83,15 +83,15 @@ class TestStripPrefixes:
         prefixes = ("docs/", "docs/sub/")
         # Should use "docs/sub/" (longer) instead of "docs/" (shorter)
         assert _strip_prefixes("docs/sub/file.rst", prefixes) == "file.rst"
-        
+
         # Test with different order - longest should still win
         prefixes_reversed = ("docs/sub/", "docs/")
         assert _strip_prefixes("docs/sub/file.rst", prefixes_reversed) == "file.rst"
-        
+
         # Test with multiple nested prefixes
         prefixes_complex = ("docs/", "docs/api/", "docs/api/v1/")
         assert _strip_prefixes("docs/api/v1/endpoints.rst", prefixes_complex) == "endpoints.rst"
-        
+
         # Shorter prefix should be used when longer doesn't match
         assert _strip_prefixes("docs/guide/intro.rst", prefixes_complex) == "guide/intro.rst"
 
