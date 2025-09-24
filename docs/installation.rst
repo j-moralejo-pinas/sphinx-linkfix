@@ -149,18 +149,6 @@ If you have issues with virtual environments, try::
     which python  # Check which Python you're using
     pip list  # Check installed packages
 
-**Docker Issues**
-
-If Docker commands fail::
-
-    # Check Docker is running
-    docker --version
-    docker-compose --version
-
-    # Check Docker permissions (Linux)
-    sudo usermod -aG docker $USER
-    # Then log out and back in
-
 **Getting Help**
 
 * Check the project's GitHub issues: https://github.com/j-moralejo-pinas/sphinx-linkfix/issues
