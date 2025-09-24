@@ -2,7 +2,7 @@
 Contributors
 ============
 
-The package-name project is made possible by contributions from the following people:
+The sphinx-linkfix project is made possible by contributions from the following people:
 
 Maintainers
 ===========

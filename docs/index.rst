@@ -1,8 +1,8 @@
 =============
-package-name
+sphinx-linkfix
 =============
 
-This is the documentation of **package-name project**.
+This is the documentation of **sphinx-linkfix project**.
 
 Contents
 ========

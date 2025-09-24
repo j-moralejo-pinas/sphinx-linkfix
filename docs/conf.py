@@ -34,7 +34,7 @@ sys.path.append(os.path.abspath("_ext"))
 #     from sphinx import apidoc
 
 # output_dir = os.path.join(__location__, "api")
-# module_dir = os.path.join(__location__, "../src/package_name")
+# module_dir = os.path.join(__location__, "../src/sphinx_linkfix")
 # try:
 #     shutil.rmtree(output_dir)
 # except FileNotFoundError:
@@ -112,7 +112,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "package-name"
+project = "sphinx-linkfix"
 copyright = "2025, Javier Moralejo"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -124,7 +124,7 @@ copyright = "2025, Javier Moralejo"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from package_name import __version__ as version
+    from sphinx_linkfix import __version__ as version
 except ImportError:
     version = ""
 
@@ -200,7 +200,7 @@ html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 # html_logo = ""
 
 # The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 3.732
 # pixels large.
 # html_favicon = None
 
@@ -251,7 +251,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "package-name-doc"
+htmlhelp_basename = "sphinx-linkfix-doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -267,7 +267,7 @@ latex_elements = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [("index", "user_guide.tex", "package-name Documentation", "Javier Moralejo", "manual")]
+latex_documents = [("index", "user_guide.tex", "sphinx-linkfix Documentation", "Javier Moralejo", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
