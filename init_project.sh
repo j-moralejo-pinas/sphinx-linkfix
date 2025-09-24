@@ -70,18 +70,18 @@ rename_directories() {
 # Function to update keywords in pyproject.toml
 update_keywords() {
     local keywords_string="$1"
-    
+
     if [[ -z "$keywords_string" ]]; then
         echo "  No keywords provided, keeping existing keywords"
         return 0
     fi
-    
+
     echo "  Updating keywords with: $keywords_string"
-    
+
     # Convert space-separated keywords to TOML array format
     local keywords_array=""
     IFS=' ' read -ra KEYWORDS_ARRAY <<< "$keywords_string"
-    
+
     for i in "${!KEYWORDS_ARRAY[@]}"; do
         if [[ $i -eq 0 ]]; then
             keywords_array="\"${KEYWORDS_ARRAY[i]}\""
@@ -89,7 +89,7 @@ update_keywords() {
             keywords_array="$keywords_array, \"${KEYWORDS_ARRAY[i]}\""
         fi
     done
-    
+
     # Update keywords line in pyproject.toml
     if [[ -f "pyproject.toml" ]]; then
         sed -i "s|^keywords = \[.*\]|keywords = [$keywords_array]|" pyproject.toml
