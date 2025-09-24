@@ -1,6 +1,4 @@
-"""
-sphinx_linkfix
-"""
+"""Sphinx extension to fix relative links in documentation."""
 
 try:
     from ._version import version as __version__
@@ -20,3 +18,8 @@ except ImportError:
             # Avoid leaking names into the package namespace
             del version
             del PackageNotFoundError
+
+# Expose the setup function for Sphinx extension
+from .extension import setup
+
+__all__ = ["__version__", "setup"]

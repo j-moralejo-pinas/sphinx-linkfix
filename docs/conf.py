@@ -200,7 +200,7 @@ html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 # html_logo = ""
 
 # The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 3.732
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 3.932
 # pixels large.
 # html_favicon = None
 

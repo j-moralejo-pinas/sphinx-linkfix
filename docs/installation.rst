@@ -4,101 +4,52 @@ Installation Guide
 This guide provides step-by-step instructions for installing and setting up the sphinx-linkfix project template. Choose the installation section that best fits your needs.
 
 .. contents:: Table of Contents
-   :local:
-   :depth: 2
+    :local:
+    :depth: 2
 
 Prerequisites
 -------------
 
 Before installing the project, ensure you have the following requirements:
 
-* **Python 3.7** (required for this project)
+* **Python 3.9** (required for this project)
 * **Git** for cloning the repository
 * **Internet connection** for downloading dependencies
 
 User Installation
 =================
 
-This section is for users who want to use the project template without modifying the source code.
+This section is for users who want to use the extension.
 
 Quick Start
 -----------
 
-1. **Clone the Repository**
+1. **Install the Extension**
 
-    Clone the project repository from GitHub::
+    Install the package using pip::
 
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
+        pip install sphinx-linkfix
 
-2. **Set Up Virtual Environment (Recommended)**
+2. **Configure Sphinx**
 
-    While not mandatory, using a virtual environment is highly recommended to avoid dependency conflicts::
+    In your Sphinx `conf.py` file, add the extension::
+        extensions = [
+            ...
+            'sphinx_linkfix',
+        ]
 
-        # Using conda (recommended)
-        conda create -n env_config python=3.7
-        conda activate env_config
+3. **Set Configuration Options (Optional)**
+    You can customize the behavior of the extension by adding the following options to your `conf.py` file:
 
-        # OR using venv
-        python -m venv venv
-        # On Linux/macOS:
-        source venv/bin/activate
-        # On Windows:
-        venv\Scripts\activate
+    .. code-block:: python
 
-3. **Install the Package**
+        # List of path prefixes to strip from links
+        linkfix_strip_prefixes = ('docs/', 'source/')
 
-    Install the project and its dependencies::
+        # List of file extensions to process
+        linkfix_file_extensions = ('.rst', '.md')
 
-        pip install -e .
-
-4. **Verify Installation**
-
-    Test that the installation was successful::
-
-        python -c "import sphinx_linkfix; print('Installation successful!')"
-
-Docker Installation (Alternative)
-==================================
-
-If you prefer to use Docker instead of a local Python installation, you can run the project in a containerized environment.
-
-Prerequisites for Docker
--------------------------
-
-* **Docker** and **Docker Compose** installed on your system
-* **Git** for cloning the repository
-
-Docker Setup
-------------
-
-1. **Clone the Repository**
-
-   ::
-
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
-
-2. **Build the Docker Image**
-
-    Build the application using Docker Compose::
-
-        docker-compose build
-
-    This will create a Docker image with all necessary dependencies pre-installed.
-
-3. **Verify Docker Installation**
-
-    Test that the Docker setup works::
-
-        docker-compose run --rm app python -c "import sphinx_linkfix; print('Docker installation successful!')"
-
-**Docker Benefits**
-
-* **Isolated environment** - No conflicts with your system Python
-* **Consistent setup** - Same environment across different machines
-* **Easy cleanup** - Remove containers when done
-* **Pre-configured dependencies** - All system libraries included
+    Adjust these settings as needed for your project structure.
 
 Developer Installation
 ======================
@@ -110,7 +61,7 @@ Development Setup
 
 1. **Clone and Navigate**
 
-   ::
+    ::
 
         git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
         cd sphinx-linkfix
@@ -119,7 +70,7 @@ Development Setup
 
     Create a virtual environment (recommended)::
 
-        conda create -n sphinx-linkfix-dev python=3.7
+        conda create -n sphinx-linkfix-dev python=3.9
         conda activate sphinx-linkfix-dev
 
 3. **Install in Development Mode**
