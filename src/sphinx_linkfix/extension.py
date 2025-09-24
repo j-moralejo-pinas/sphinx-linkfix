@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def _is_external(href: str) -> bool:
-    """
-    Check if a given href is an external link.
+    """Check if a given href is an external link.
 
     Parameters
     ----------
@@ -30,8 +29,7 @@ def _is_external(href: str) -> bool:
 
 
 def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
-    """
-    Remove leading folder prefixes from a path string.
+    """Remove leading folder prefixes from a path string.
 
     Parameters
     ----------
