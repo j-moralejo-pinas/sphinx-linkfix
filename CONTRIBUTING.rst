@@ -4,8 +4,8 @@ Contributing
 
 We welcome contributions to the sphinx-linkfix project! This guide will help you get started with contributing to the project.
 
-📋 **Table of Contents**
-========================
+**Table of Contents**
+=====================
 
 1. `Getting Started`_
 2. `Development Setup`_
@@ -646,7 +646,7 @@ Code of Conduct
 
 All contributors are expected to adhere to our `Code of Conduct <CODE_OF_CONDUCT.rst>`_.
 
-Thank you for contributing to the sphinx-linkfix project! 🚀
+Thank you for contributing to the sphinx-linkfix project!
 
 Issue Reporting
 ===============
