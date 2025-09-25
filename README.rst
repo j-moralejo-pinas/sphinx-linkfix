@@ -39,7 +39,7 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 
 
 🚀 **Quick Start Guide**
--------------------
+------------------------
 
 1. Install the extension using pip:
 
