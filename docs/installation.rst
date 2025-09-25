@@ -1,3 +1,4 @@
+==================
 Installation Guide
 ==================
 
@@ -8,7 +9,7 @@ This guide provides step-by-step instructions for installing and setting up the 
     :depth: 2
 
 Prerequisites
--------------
+=============
 
 Before installing the project, ensure you have the following requirements:
 
@@ -24,32 +25,30 @@ This section is for users who want to use the extension.
 Quick Start
 -----------
 
-1. **Install the Extension**
+1. **Install the Extension**: Install the package using pip
 
-    Install the package using pip::
+.. code-block::
 
-        pip install sphinx-linkfix
+    pip install sphinx-linkfix
 
-2. **Configure Sphinx**
+2. **Configure Sphinx**: In your Sphinx ``conf.py`` file, add the extension
 
-    In your Sphinx `conf.py` file, add the extension::
-        extensions = [
-            ...
-            'sphinx_linkfix',
-        ]
+.. code-block::
 
-3. **Set Configuration Options (Optional)**
-    You can customize the behavior of the extension by adding the following options to your `conf.py` file:
+    extensions = [
+        ...,
+        'sphinx_linkfix',
+    ]
 
-    .. code-block:: python
+3. **Set Configuration Options (Optional)**: You can customize the behavior of the extension by adding the following options to your ``conf.py`` file:
 
-        # List of path prefixes to strip from links
-        linkfix_strip_prefixes = ('docs/', 'source/')
+.. code-block:: python
 
-        # List of file extensions to process
-        linkfix_file_extensions = ('.rst', '.md')
+    # List of path prefixes to strip from links
+    sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
 
-    Adjust these settings as needed for your project structure.
+    # List of file extensions to process
+    sphinx_linkfix_file_extensions = ('.rst', '.md')
 
 Developer Installation
 ======================
@@ -61,70 +60,67 @@ Development Setup
 
 1. **Clone and Navigate**
 
-    ::
+.. code-block::
 
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
+    git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
+    cd sphinx-linkfix
 
-2. **Set Up Development Environment**
+2. **Set Up Development Environment**: Create a virtual environment (recommended)
 
-    Create a virtual environment (recommended)::
+.. code-block::
 
-        conda create -n sphinx-linkfix-dev python=3.9
-        conda activate sphinx-linkfix-dev
+    conda create -n sphinx-linkfix-dev python=3.9
+    conda activate sphinx-linkfix-dev
 
-3. **Install in Development Mode**
-
-    Install the package with development dependencies::
-
-        pip install -e ".[dev,docs]"
-
+3. **Install in Development Mode**: Install the package with development dependencies
     This installs the project in editable mode with all development tools including:
 
-   * ``pytest`` - Testing framework
-   * ``pyright`` - Type checking
-   * ``pre-commit`` - Git hooks for code quality
-   * ``ruff`` - Fast Python linter and formatter
-   * ``pydoclint`` - Documentation linting
-   * ``docformatter`` - Documentation formatting
-   * ``pytest-cov`` - Test coverage
-   * ``pyupgrade`` - Code modernization
-   * ``sphinx`` - Documentation generation
-   * ``sphinx-autoapi`` - Automatic API documentation generation
+    * ``pytest`` - Testing framework
+    * ``pyright`` - Type checking
+    * ``pre-commit`` - Git hooks for code quality
+    * ``ruff`` - Fast Python linter and formatter
+    * ``pydoclint`` - Documentation linting
+    * ``docformatter`` - Documentation formatting
+    * ``pytest-cov`` - Test coverage
+    * ``pyupgrade`` - Code modernization
+    * ``sphinx`` - Documentation generation
+    * ``sphinx-autoapi`` - Automatic API documentation generation
 
-4. **Set Up Pre-commit Hooks**
+.. code-block::
 
-    Install pre-commit hooks to ensure code quality::
+    pip install -e ".[dev,docs]"
 
-        pre-commit install
+4. **Set Up Pre-commit Hooks**: Install pre-commit hooks to ensure code quality
 
-5. **Configure Type Checking**
+.. code-block::
 
-    Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root::
+    pre-commit install
 
-        {
-            "venvPath": "/path/to/your/conda/envs",
-            "venv": "sphinx-linkfix-dev"
-        }
+5. **Configure Type Checking**: Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root
 
-    Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
+.. code-block::
 
-6. **Configure Environment**
+    {
+        "venvPath": "/path/to/your/conda/envs",
+        "venv": "sphinx-linkfix-dev"
+    }
 
-    Set the ``PYTHONPATH`` environment variable::
+.. [#f1] Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
 
-        export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
+6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable or add it to your shell profile to include the source directory (``~/.bashrc``, ``~/.zshrc``, etc.)
 
-    Or add this to your shell profile (``~/.bashrc``, ``~/.zshrc``, etc.).
+.. code-block::
 
-7. **Verify Installation**
+    export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
-    Test that the development installation was successful::
+7. **Verify Installation**: Test that the development installation was successful
 
-        python -c "import sphinx_linkfix; print('Development installation successful!')"
-        pytest --version
-        ruff --version
-        pyright --version
+.. code-block::
+
+    python -c "import sphinx_linkfix; print('Development installation successful!')"
+    pytest --version
+    ruff --version
+    pyright --version
 
 Troubleshooting
 ===============
@@ -133,13 +129,17 @@ Troubleshooting
 
 **Import Errors**
 
-If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly::
+If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly
+
+.. code-block::
 
     export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
 **Virtual Environment Issues**
 
-If you have issues with virtual environments, try::
+If you have issues with virtual environments, try
+
+.. code-block::
 
     # For conda environments
     conda info --envs  # List all environments

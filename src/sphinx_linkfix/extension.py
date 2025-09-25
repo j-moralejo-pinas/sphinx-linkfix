@@ -19,11 +19,13 @@ def _is_external(href: str) -> bool:
 
     Parameters
     ----------
-        href (str): The URL to check.
+    href: str
+        The URL to check.
 
     Returns
     -------
-        bool: True if the URL is external, False otherwise.
+    bool
+        True if the URL is external, False otherwise.
     """
     parsed = urlparse(href)
     return bool(parsed.scheme and parsed.netloc)
@@ -35,12 +37,15 @@ def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
 
     Parameters
     ----------
-        path_str (str): The path string to modify.
-        prefixes (tuple[str, ...]): A tuple of prefixes to remove.
+    path_str: str
+        The path string to modify.
+    prefixes: tuple[str, ...]
+        A tuple of prefixes to remove.
 
     Returns
     -------
-        str: The modified path string with the prefixes removed.
+    str
+        The modified path string with the prefixes removed.
     """
     # For prefix matching, we need to work with the original path
     # but ensure cross-platform compatibility
@@ -113,11 +118,13 @@ def setup(app: Any) -> dict[str, str | bool]:
 
     Parameters
     ----------
-        app: The Sphinx application object.
+    app: Any
+        The Sphinx application object.
 
     Returns
     -------
-        dict: A dictionary with extension metadata.
+    dict[str, str | bool]
+        A dictionary with extension metadata.
     """
     logger.info("[link_rewriter] extension loaded")
     app.add_config_value("sphinx_linkfix_strip_prefixes", (), "env")

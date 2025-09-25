@@ -64,7 +64,7 @@ dev = [
     "pytest-cov",
     "pyupgrade"
 ]
-docs = ["sphinx", "sphinx-autoapi"]
+docs = ["sphinx", "sphinx-autoapi", "sphinx-rtd-theme"]
 format = ["ruff", "docformatter", "pyupgrade"]
 code-quality = ["ruff", "pydoclint", "pyright"]
 test = ["pytest", "pytest-cov"]
