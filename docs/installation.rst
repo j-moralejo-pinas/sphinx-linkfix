@@ -101,7 +101,7 @@ Development Setup
 .. code-block::
 
     {
-        "venvPath": "/path/to/your/conda/envs" [#f1]_,
+        "venvPath": "/path/to/your/conda/envs",
         "venv": "sphinx-linkfix-dev"
     }
 
