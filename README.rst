@@ -37,6 +37,19 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 - **Support for multiple file extensions**: Configure which file extensions to process (e.g., ``.rst``, ``.md``).
 - **Easy integration**: Simple setup and configuration in ``conf.py``.
 
+**Before Building Documentation**
+
+.. image:: docs/images/code_before.png
+    :alt: Documentation before applying sphinx-linkfix
+    :align: center
+
+**After Building Documentation**
+
+.. image:: docs/images/code_after.png
+    :alt: Documentation after applying sphinx-linkfix
+    :align: center
+
+
 
 **Quick Start Guide**
 ---------------------

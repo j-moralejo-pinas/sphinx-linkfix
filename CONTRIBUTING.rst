@@ -622,9 +622,7 @@ Understanding the codebase structure will help you contribute effectively:
 .. code-block::
 
     sphinx-linkfix/
-    ├── src/                        # Source code
-    │   ├── sphinx_linkfix/           # Main package
-    │   └── other_package/          # Additional package
+    ├── src/sphinx_linkfix/         # Source code
     ├── tests/                      # Test suite
     ├── docs/                       # Documentation
     └── pyproject.toml              # Project configuration
