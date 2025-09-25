@@ -8,6 +8,13 @@ Sources to write the changelog:
 - https://semver.org/
 
 
+v0.1.3 - 2025-09-25
+===================
+
+Fixed
+-----
+- More pyproject classifiers
+
 v0.1.2 - 2025-09-25
 ===================
 
