@@ -7,7 +7,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from docutils import nodes
-from sphinx.transforms.post_transforms import SphinxPostTransform
+from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
@@ -67,10 +67,10 @@ def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
     return str(PurePosixPath(original_path))
 
 
-class RstLinkRewriter(SphinxPostTransform):
-    """Post- transform to rewrite internal links in reStructuredText files."""
+class RstLinkRewriter(SphinxTransform):
+    """Transform to rewrite internal links in reStructuredText files."""
 
-    default_priority = 999
+    default_priority = 210
     supported_builders: tuple[str, ...] = (
         "html",
         "dirhtml",
@@ -165,7 +165,7 @@ class RstLinkRewriter(SphinxPostTransform):
                 changed += 1
         return changed
 
-    def run(self) -> None:
+    def apply(self) -> None:
         """Rewrite internal links in the document."""
         builder = self.app.builder
 
@@ -186,11 +186,12 @@ class RstLinkRewriter(SphinxPostTransform):
 
         # Process references
         changed = self._process_references(prefixes, exts)
-        if changed:
-            logger.info("[link_rewriter] %s: rewrote %d link(s)", self.env.docname, changed)
 
         # Process images
         image_changed = self._process_images(prefixes)
+
+        if changed:
+            logger.info("[link_rewriter] %s: rewrote %d link(s)", self.env.docname, changed)
         if image_changed:
             logger.info(
                 "[link_rewriter] %s: rewrote %d image path(s)",
@@ -216,5 +217,5 @@ def setup(app: Any) -> dict[str, str | bool]:
     logger.info("[link_rewriter] extension loaded")
     app.add_config_value("sphinx_linkfix_strip_prefixes", (), "env")
     app.add_config_value("sphinx_linkfix_extensions", (), "env")
-    app.add_post_transform(RstLinkRewriter)
+    app.add_transform(RstLinkRewriter)
     return {"version": "1.0", "parallel_read_safe": True}
