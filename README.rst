@@ -95,7 +95,7 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 **Essential Guides:**
 
 - `Installation Guide <docs/installation.rst>`_ - Setup instructions and requirements
-- `Contributing Guidelines <CONTRIBUTING>` - Development standards and contribution process
+- `Contributing Guidelines <CONTRIBUTING.rst>`_ - Development standards and contribution process
 - `License <LICENSE.txt>`_ - License terms and usage rights
 - `Authors <AUTHORS.rst>`_ - Project contributors and maintainers
 - `Changelog <CHANGELOG.rst>`_ - Project history and version changes
