@@ -1,104 +1,54 @@
+==================
 Installation Guide
 ==================
 
 This guide provides step-by-step instructions for installing and setting up the sphinx-linkfix project template. Choose the installation section that best fits your needs.
 
 .. contents:: Table of Contents
-   :local:
-   :depth: 2
+    :local:
+    :depth: 2
 
 Prerequisites
--------------
+=============
 
 Before installing the project, ensure you have the following requirements:
 
-* **Python 3.7** (required for this project)
+* **Python 3.9** (required for this project)
 * **Git** for cloning the repository
 * **Internet connection** for downloading dependencies
 
 User Installation
 =================
 
-This section is for users who want to use the project template without modifying the source code.
+This section is for users who want to use the extension.
 
 Quick Start
 -----------
 
-1. **Clone the Repository**
+1. **Install the Extension**: Install the package using pip
 
-    Clone the project repository from GitHub::
+.. code-block::
 
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
+    pip install sphinx-linkfix
 
-2. **Set Up Virtual Environment (Recommended)**
+2. **Configure Sphinx**: In your Sphinx ``conf.py`` file, add the extension
 
-    While not mandatory, using a virtual environment is highly recommended to avoid dependency conflicts::
+.. code-block::
 
-        # Using conda (recommended)
-        conda create -n env_config python=3.7
-        conda activate env_config
+    extensions = [
+        ...,
+        'sphinx_linkfix',
+    ]
 
-        # OR using venv
-        python -m venv venv
-        # On Linux/macOS:
-        source venv/bin/activate
-        # On Windows:
-        venv\Scripts\activate
+3. **Set Configuration Options (Optional)**: You can customize the behavior of the extension by adding the following options to your ``conf.py`` file:
 
-3. **Install the Package**
+.. code-block:: python
 
-    Install the project and its dependencies::
+    # List of path prefixes to strip from links
+    sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
 
-        pip install -e .
-
-4. **Verify Installation**
-
-    Test that the installation was successful::
-
-        python -c "import sphinx_linkfix; print('Installation successful!')"
-
-Docker Installation (Alternative)
-==================================
-
-If you prefer to use Docker instead of a local Python installation, you can run the project in a containerized environment.
-
-Prerequisites for Docker
--------------------------
-
-* **Docker** and **Docker Compose** installed on your system
-* **Git** for cloning the repository
-
-Docker Setup
-------------
-
-1. **Clone the Repository**
-
-   ::
-
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
-
-2. **Build the Docker Image**
-
-    Build the application using Docker Compose::
-
-        docker-compose build
-
-    This will create a Docker image with all necessary dependencies pre-installed.
-
-3. **Verify Docker Installation**
-
-    Test that the Docker setup works::
-
-        docker-compose run --rm app python -c "import sphinx_linkfix; print('Docker installation successful!')"
-
-**Docker Benefits**
-
-* **Isolated environment** - No conflicts with your system Python
-* **Consistent setup** - Same environment across different machines
-* **Easy cleanup** - Remove containers when done
-* **Pre-configured dependencies** - All system libraries included
+    # List of file extensions to process
+    sphinx_linkfix_file_extensions = ('.rst', '.md')
 
 Developer Installation
 ======================
@@ -110,70 +60,67 @@ Development Setup
 
 1. **Clone and Navigate**
 
-   ::
+.. code-block::
 
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
+    git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
+    cd sphinx-linkfix
 
-2. **Set Up Development Environment**
+2. **Set Up Development Environment**: Create a virtual environment (recommended)
 
-    Create a virtual environment (recommended)::
+.. code-block::
 
-        conda create -n sphinx-linkfix-dev python=3.7
-        conda activate sphinx-linkfix-dev
+    conda create -n sphinx-linkfix-dev python=3.9
+    conda activate sphinx-linkfix-dev
 
-3. **Install in Development Mode**
-
-    Install the package with development dependencies::
-
-        pip install -e ".[dev,docs]"
-
+3. **Install in Development Mode**: Install the package with development dependencies
     This installs the project in editable mode with all development tools including:
 
-   * ``pytest`` - Testing framework
-   * ``pyright`` - Type checking
-   * ``pre-commit`` - Git hooks for code quality
-   * ``ruff`` - Fast Python linter and formatter
-   * ``pydoclint`` - Documentation linting
-   * ``docformatter`` - Documentation formatting
-   * ``pytest-cov`` - Test coverage
-   * ``pyupgrade`` - Code modernization
-   * ``sphinx`` - Documentation generation
-   * ``sphinx-autoapi`` - Automatic API documentation generation
+    * ``pytest`` - Testing framework
+    * ``pyright`` - Type checking
+    * ``pre-commit`` - Git hooks for code quality
+    * ``ruff`` - Fast Python linter and formatter
+    * ``pydoclint`` - Documentation linting
+    * ``docformatter`` - Documentation formatting
+    * ``pytest-cov`` - Test coverage
+    * ``pyupgrade`` - Code modernization
+    * ``sphinx`` - Documentation generation
+    * ``sphinx-autoapi`` - Automatic API documentation generation
 
-4. **Set Up Pre-commit Hooks**
+.. code-block::
 
-    Install pre-commit hooks to ensure code quality::
+    pip install -e ".[dev,docs]"
 
-        pre-commit install
+4. **Set Up Pre-commit Hooks**: Install pre-commit hooks to ensure code quality
 
-5. **Configure Type Checking**
+.. code-block::
 
-    Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root::
+    pre-commit install
 
-        {
-            "venvPath": "/path/to/your/conda/envs",
-            "venv": "sphinx-linkfix-dev"
-        }
+5. **Configure Type Checking**: Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root
 
-    Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
+.. code-block::
 
-6. **Configure Environment**
+    {
+        "venvPath": "/path/to/your/conda/envs",
+        "venv": "sphinx-linkfix-dev"
+    }
 
-    Set the ``PYTHONPATH`` environment variable::
+.. [#f1] Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
 
-        export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
+6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable or add it to your shell profile to include the source directory (``~/.bashrc``, ``~/.zshrc``, etc.)
 
-    Or add this to your shell profile (``~/.bashrc``, ``~/.zshrc``, etc.).
+.. code-block::
 
-7. **Verify Installation**
+    export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
-    Test that the development installation was successful::
+7. **Verify Installation**: Test that the development installation was successful
 
-        python -c "import sphinx_linkfix; print('Development installation successful!')"
-        pytest --version
-        ruff --version
-        pyright --version
+.. code-block::
+
+    python -c "import sphinx_linkfix; print('Development installation successful!')"
+    pytest --version
+    ruff --version
+    pyright --version
 
 Troubleshooting
 ===============
@@ -182,13 +129,17 @@ Troubleshooting
 
 **Import Errors**
 
-If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly::
+If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly
+
+.. code-block::
 
     export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
 **Virtual Environment Issues**
 
-If you have issues with virtual environments, try::
+If you have issues with virtual environments, try
+
+.. code-block::
 
     # For conda environments
     conda info --envs  # List all environments
@@ -197,18 +148,6 @@ If you have issues with virtual environments, try::
     # For venv environments
     which python  # Check which Python you're using
     pip list  # Check installed packages
-
-**Docker Issues**
-
-If Docker commands fail::
-
-    # Check Docker is running
-    docker --version
-    docker-compose --version
-
-    # Check Docker permissions (Linux)
-    sudo usermod -aG docker $USER
-    # Then log out and back in
 
 **Getting Help**
 

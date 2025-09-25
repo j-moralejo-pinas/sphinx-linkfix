@@ -79,6 +79,7 @@ repos:
   rev: 1.8.6
   hooks:
   - id: bandit
+    exclude: ^tests/.*\.py
 
 # Check dependencies for security vulnerabilities:
 - repo: https://github.com/pypa/pip-audit

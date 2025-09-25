@@ -178,12 +178,12 @@ todo_emit_warnings = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
+html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -200,7 +200,7 @@ html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 # html_logo = ""
 
 # The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 3.732
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 3.932
 # pixels large.
 # html_favicon = None
 
@@ -267,7 +267,9 @@ latex_elements = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [("index", "user_guide.tex", "sphinx-linkfix Documentation", "Javier Moralejo", "manual")]
+latex_documents = [
+    ("index", "user_guide.tex", "sphinx-linkfix Documentation", "Javier Moralejo", "manual")
+]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
