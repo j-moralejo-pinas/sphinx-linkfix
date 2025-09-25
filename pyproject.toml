@@ -22,7 +22,7 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Text Processing :: Markup",
-    "Topic :: Text Processing :: Markup :: ReStructuredText",
+    "Topic :: Text Processing :: Markup :: reStructuredText",
     "Framework :: Sphinx",
     "Framework :: Sphinx :: Extension",
 ]
@@ -64,7 +64,9 @@ dev = [
     "docformatter",
     "pytest",
     "pytest-cov",
-    "pyupgrade"
+    "pyupgrade",
+    "twine",
+    "build",
 ]
 docs = ["sphinx", "sphinx-autoapi", "sphinx-rtd-theme"]
 format = ["ruff", "docformatter", "pyupgrade"]
