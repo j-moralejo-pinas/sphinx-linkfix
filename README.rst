@@ -49,8 +49,6 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
     :alt: Documentation after applying sphinx-linkfix
     :align: center
 
-
-
 **Quick Start Guide**
 ---------------------
 
