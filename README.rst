@@ -88,7 +88,3 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 - 👥 `Authors <AUTHORS.rst>`_ - Project contributors and maintainers
 - 📜 `Changelog <CHANGELOG.rst>`_ - Project history and version changes
 - 📜 `Code of Conduct <CODE_OF_CONDUCT.rst>`_ - Guidelines for participation and conduct
-
----
-
-*A modern Python project template with comprehensive CI/CD and development tooling*
