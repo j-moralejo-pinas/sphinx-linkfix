@@ -207,8 +207,6 @@ marimo/_lsp/
 __marimo__/
 
 # PyRight Local Config
-pyrightconfig.local.json
 
 # Version file
 **/_version.py
-pyrightconfig.local.json

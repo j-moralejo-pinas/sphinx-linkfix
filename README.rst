@@ -11,8 +11,8 @@ sphinx-linkfix
 
 Sphinx extension that rewrites GitHub-style links into proper Sphinx references.
 
-🎯 **Project Description**
---------------------------
+**Project Description**
+-----------------------
 
 I like to have links in the README that point to other sections of the documentation,
 so you can navigate the docs easily from the GitHub repo itself. However, Sphinx does not
@@ -28,8 +28,8 @@ You can combine this with a script to removes all of the links in the README dur
 to pypi, so that the README on PyPI does not contain broken links, and keep a single README file for GitHub, Sphinx and PyPI.
 
 
-🚀 **Key Features**
--------------------
+**Key Features**
+----------------
 
 - **Transform GitHub-style links**: Automatically rewrite links in the documentation to use Sphinx's internal referencing system.
 - **Ignores external links**: Only processes local file links, leaving external URLs untouched.
@@ -38,8 +38,8 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 - **Easy integration**: Simple setup and configuration in ``conf.py``.
 
 
-🚀 **Quick Start Guide**
-------------------------
+**Quick Start Guide**
+---------------------
 
 1. Install the extension using pip:
 
@@ -77,14 +77,14 @@ to pypi, so that the README on PyPI does not contain broken links, and keep a si
 6. During the Sphinx build process, the extension scans the documents for links that point to local files and rewrites them to use Sphinx's internal referencing system.
 
 
-📚 **Documentation**
---------------------
+**Documentation**
+-----------------
 
 **Essential Guides:**
 
-- 📦 `Installation Guide <docs/installation.rst>`_ - Setup instructions and requirements
-- 🤝 `Contributing Guidelines <CONTRIBUTING.rst>`_ - Development standards and contribution process
-- 📄 `License <LICENSE.txt>`_ - License terms and usage rights
-- 👥 `Authors <AUTHORS.rst>`_ - Project contributors and maintainers
-- 📜 `Changelog <CHANGELOG.rst>`_ - Project history and version changes
-- 📜 `Code of Conduct <CODE_OF_CONDUCT.rst>`_ - Guidelines for participation and conduct
+- `Installation Guide <docs/installation.rst>`_ - Setup instructions and requirements
+- `Contributing Guidelines <CONTRIBUTING.rst>`_ - Development standards and contribution process
+- `License <LICENSE.txt>`_ - License terms and usage rights
+- `Authors <AUTHORS.rst>`_ - Project contributors and maintainers
+- `Changelog <CHANGELOG.rst>`_ - Project history and version changes
+- `Code of Conduct <CODE_OF_CONDUCT.rst>`_ - Guidelines for participation and conduct
