@@ -27,13 +27,13 @@ Quick Start
 
 1. **Install the Extension**: Install the package using pip
 
-    ::
+    .. code-block::
 
         pip install sphinx-linkfix
 
 2. **Configure Sphinx**: In your Sphinx ``conf.py`` file, add the extension
 
-    ::
+    .. code-block::
 
         extensions = [
             ...,
@@ -50,6 +50,7 @@ Quick Start
         # List of file extensions to process
         sphinx_linkfix_file_extensions = ('.rst', '.md')
 
+
     Adjust these settings as needed for your project structure.
 
 Developer Installation
@@ -62,46 +63,46 @@ Development Setup
 
 1. **Clone and Navigate**
 
-    ::
+    .. code-block::
 
         git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
         cd sphinx-linkfix
 
 2. **Set Up Development Environment**: Create a virtual environment (recommended)
 
-    ::
+    .. code-block::
 
         conda create -n sphinx-linkfix-dev python=3.9
         conda activate sphinx-linkfix-dev
 
 3. **Install in Development Mode**: Install the package with development dependencies
 
-    ::
+    .. code-block::
 
         pip install -e ".[dev,docs]"
 
     This installs the project in editable mode with all development tools including:
 
-   * ``pytest`` - Testing framework
-   * ``pyright`` - Type checking
-   * ``pre-commit`` - Git hooks for code quality
-   * ``ruff`` - Fast Python linter and formatter
-   * ``pydoclint`` - Documentation linting
-   * ``docformatter`` - Documentation formatting
-   * ``pytest-cov`` - Test coverage
-   * ``pyupgrade`` - Code modernization
-   * ``sphinx`` - Documentation generation
-   * ``sphinx-autoapi`` - Automatic API documentation generation
+    * ``pytest`` - Testing framework
+    * ``pyright`` - Type checking
+    * ``pre-commit`` - Git hooks for code quality
+    * ``ruff`` - Fast Python linter and formatter
+    * ``pydoclint`` - Documentation linting
+    * ``docformatter`` - Documentation formatting
+    * ``pytest-cov`` - Test coverage
+    * ``pyupgrade`` - Code modernization
+    * ``sphinx`` - Documentation generation
+    * ``sphinx-autoapi`` - Automatic API documentation generation
 
 4. **Set Up Pre-commit Hooks**: Install pre-commit hooks to ensure code quality
 
-    ::
+    .. code-block::
 
         pre-commit install
 
 5. **Configure Type Checking**: Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root
 
-    ::
+    .. code-block::
 
         {
             "venvPath": "/path/to/your/conda/envs",
@@ -112,7 +113,7 @@ Development Setup
 
 6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable
 
-    ::
+    .. code-block::
 
         export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
@@ -120,7 +121,7 @@ Development Setup
 
 7. **Verify Installation**: Test that the development installation was successful
 
-    ::
+    .. code-block::
 
         python -c "import sphinx_linkfix; print('Development installation successful!')"
         pytest --version
@@ -134,13 +135,17 @@ Troubleshooting
 
 **Import Errors**
 
-If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly::
+If you encounter import errors, ensure the ``PYTHONPATH`` is set correctly
+
+.. code-block::
 
     export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
 **Virtual Environment Issues**
 
-If you have issues with virtual environments, try::
+If you have issues with virtual environments, try
+
+.. code-block::
 
     # For conda environments
     conda info --envs  # List all environments
