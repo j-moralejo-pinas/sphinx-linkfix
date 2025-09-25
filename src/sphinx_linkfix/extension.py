@@ -68,13 +68,54 @@ def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
 
 
 class RstLinkRewriter(SphinxPostTransform):
-    """Post-transform to rewrite internal links in reStructuredText files."""
+    """Post- transform to rewrite internal links in reStructuredText files."""
 
     default_priority = 999
+    supported_builders: tuple[str, ...] = (
+        "html",
+        "dirhtml",
+        "singlehtml",
+        "epub",
+        "latex",
+        "latexpdf",
+    )
+
+    def _sanitize_fragment_for_latex(self, fragment: str) -> str:
+        """
+        Sanitize a fragment for LaTeX compatibility.
+
+        Parameters
+        ----------
+        fragment: str
+            The fragment to sanitize.
+
+        Returns
+        -------
+        str
+            The sanitized fragment.
+        """
+        if not fragment:
+            return ""
+
+        # LaTeX labels should be alphanumeric with hyphens/underscores
+        # Convert problematic characters to valid LaTeX label format
+        safe_frag = fragment.replace(".", "-").replace(" ", "-")
+        return "".join(c for c in safe_frag if c.isalnum() or c in "-_")
 
     def run(self) -> None:
         """Rewrite internal links in the document."""
         builder = self.app.builder
+        is_latex = builder.name in ("latex", "latexpdf")
+
+        # Check if the current builder is supported
+        if builder.name not in self.supported_builders:
+            logger.debug(
+                "[link_rewriter] %s: skipping transformation for unsupported builder '%s'",
+                self.env.docname,
+                builder.name,
+            )
+            return
+
         changed = 0
         prefixes = tuple(
             self.app.config.sphinx_linkfix_strip_prefixes or ("docs/", "./", "source/")
@@ -101,12 +142,25 @@ class RstLinkRewriter(SphinxPostTransform):
             path_str = _strip_prefixes(path_str, prefixes)
 
             target_doc = str(PurePosixPath(path_str).with_suffix("")).lstrip("./")
-            html_uri = builder.get_target_uri(target_doc)
-            if frag:
-                html_uri = f"{html_uri}#{frag}"
+            try:
+                new_uri = builder.get_target_uri(target_doc)
 
-            ref["refuri"] = html_uri
-            changed += 1
+                # Handle fragments based on builder type
+                if frag:
+                    if is_latex:
+                        frag = self._sanitize_fragment_for_latex(frag)
+
+                    new_uri = f"{new_uri}#{frag}"
+
+                ref["refuri"] = new_uri
+                changed += 1
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "[link_rewriter] %s: failed to resolve URI for %s: %s",
+                    self.env.docname,
+                    target_doc,
+                    e,
+                )
 
         if changed:
             logger.info("[link_rewriter] %s: rewrote %d link(s)", self.env.docname, changed)

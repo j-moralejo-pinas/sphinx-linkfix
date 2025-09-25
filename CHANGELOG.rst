@@ -8,6 +8,13 @@ Sources to write the changelog:
 - https://semver.org/
 
 
+v0.1.4 - 2025-09-25
+===================
+
+Added
+-----
+- Support to latexpdf
+
 v0.1.3 - 2025-09-25
 ===================
 

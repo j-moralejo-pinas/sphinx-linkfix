@@ -40,7 +40,7 @@ repos:
   rev: v1.7.7
   hooks:
     - id: docformatter
-      args: [--in-place]
+      args: ["--config", "pyproject.toml"]
       files: ^src/.*\.py
       exclude: ^src/sphinx_linkfix/old/.*\.py
 

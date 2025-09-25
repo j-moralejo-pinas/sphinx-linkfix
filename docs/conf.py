@@ -10,8 +10,6 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath("_ext"))
-
 # -- Path setup --------------------------------------------------------------
 
 # __location__ = os.path.dirname(__file__)
@@ -76,7 +74,7 @@ extensions = [
     "sphinx.ext.imgmath",
     "sphinx.ext.ifconfig",
     "sphinx.ext.imgconverter",
-    "link_rewriter",
+    "sphinx_linkfix",
 ]
 
 autoapi_type = "python"
