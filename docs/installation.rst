@@ -27,31 +27,28 @@ Quick Start
 
 1. **Install the Extension**: Install the package using pip
 
-    .. code-block::
+.. code-block::
 
-        pip install sphinx-linkfix
+    pip install sphinx-linkfix
 
 2. **Configure Sphinx**: In your Sphinx ``conf.py`` file, add the extension
 
-    .. code-block::
+.. code-block::
 
-        extensions = [
-            ...,
-            'sphinx_linkfix',
-        ]
+    extensions = [
+        ...,
+        'sphinx_linkfix',
+    ]
 
 3. **Set Configuration Options (Optional)**: You can customize the behavior of the extension by adding the following options to your ``conf.py`` file:
 
-    .. code-block:: python
+.. code-block:: python
 
-        # List of path prefixes to strip from links
-        sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
+    # List of path prefixes to strip from links
+    sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
 
-        # List of file extensions to process
-        sphinx_linkfix_file_extensions = ('.rst', '.md')
-
-
-    Adjust these settings as needed for your project structure.
+    # List of file extensions to process
+    sphinx_linkfix_file_extensions = ('.rst', '.md')
 
 Developer Installation
 ======================
@@ -63,24 +60,19 @@ Development Setup
 
 1. **Clone and Navigate**
 
-    .. code-block::
+.. code-block::
 
-        git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
-        cd sphinx-linkfix
+    git clone https://github.com/j-moralejo-pinas/sphinx-linkfix.git
+    cd sphinx-linkfix
 
 2. **Set Up Development Environment**: Create a virtual environment (recommended)
 
-    .. code-block::
+.. code-block::
 
-        conda create -n sphinx-linkfix-dev python=3.9
-        conda activate sphinx-linkfix-dev
+    conda create -n sphinx-linkfix-dev python=3.9
+    conda activate sphinx-linkfix-dev
 
 3. **Install in Development Mode**: Install the package with development dependencies
-
-    .. code-block::
-
-        pip install -e ".[dev,docs]"
-
     This installs the project in editable mode with all development tools including:
 
     * ``pytest`` - Testing framework
@@ -94,39 +86,41 @@ Development Setup
     * ``sphinx`` - Documentation generation
     * ``sphinx-autoapi`` - Automatic API documentation generation
 
+.. code-block::
+
+    pip install -e ".[dev,docs]"
+
 4. **Set Up Pre-commit Hooks**: Install pre-commit hooks to ensure code quality
 
-    .. code-block::
+.. code-block::
 
-        pre-commit install
+    pre-commit install
 
 5. **Configure Type Checking**: Link your development environment to Pyright for proper type checking. Create a ``pyrightconfig.local.json`` file in the project root
 
-    .. code-block::
+.. code-block::
 
-        {
-            "venvPath": "/path/to/your/conda/envs",
-            "venv": "sphinx-linkfix-dev"
-        }
+    {
+        "venvPath": "/path/to/your/conda/envs" [#f1]_,
+        "venv": "sphinx-linkfix-dev"
+    }
 
-    Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
+.. [#f1] Replace ``/path/to/your/conda/envs`` with your actual conda environments path (e.g., ``/home/username/miniconda3/envs`` or ``/home/username/micromamba/envs``).
 
-6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable
+6. **Configure Environment**: Set the ``PYTHONPATH`` environment variable or add it to your shell profile to include the source directory (``~/.bashrc``, ``~/.zshrc``, etc.)
 
-    .. code-block::
+.. code-block::
 
-        export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
-
-    Or add this to your shell profile (``~/.bashrc``, ``~/.zshrc``, etc.).
+    export PYTHONPATH="${PWD}/src:${PYTHONPATH}"
 
 7. **Verify Installation**: Test that the development installation was successful
 
-    .. code-block::
+.. code-block::
 
-        python -c "import sphinx_linkfix; print('Development installation successful!')"
-        pytest --version
-        ruff --version
-        pyright --version
+    python -c "import sphinx_linkfix; print('Development installation successful!')"
+    pytest --version
+    ruff --version
+    pyright --version
 
 Troubleshooting
 ===============
