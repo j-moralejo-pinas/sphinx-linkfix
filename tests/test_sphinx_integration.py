@@ -189,6 +189,81 @@ Custom extension document.
         # Non-matching prefix should remain but be converted to .html
         assert 'href="docs/doc.html"' in index_html
 
+    def test_image_path_rewriting_integration(self, tmp_path: Path) -> None:
+        """Test that image paths are rewritten correctly."""
+        build_main = pytest.importorskip("sphinx.cmd.build").build_main
+
+        source_dir = tmp_path / "source"
+        build_dir = tmp_path / "build"
+        images_dir = source_dir / "images"
+        source_dir.mkdir()
+        build_dir.mkdir()
+        images_dir.mkdir()
+
+        # Create a test image file
+        (images_dir / "test_image.png").write_bytes(b"fake_image_content")
+
+        # Create Sphinx configuration
+        (source_dir / "conf.py").write_text(
+            """\
+extensions = ['sphinx_linkfix']
+sphinx_linkfix_strip_prefixes = ('docs/', './', 'source/')
+sphinx_linkfix_extensions = ('.rst', '.md', '.txt')
+project = 'Image Test Project'
+master_doc = 'index'
+html_theme = 'basic'
+"""
+        )
+
+        # Create test document with images
+        (source_dir / "index.rst").write_text(
+            """\
+Image Test Documentation
+========================
+
+Images that should be rewritten:
+
+.. image:: docs/images/test_image.png
+   :alt: Test Image
+
+.. image:: ./images/test_image.png
+   :width: 200
+
+.. image:: source/images/test_image.png
+
+Images that should NOT be rewritten:
+
+.. image:: https://example.com/image.png
+
+.. image:: images/test_image.png
+"""
+        )
+
+        # Build documentation
+        build_args = [
+            "-b",
+            "html",
+            "-q",
+            str(source_dir),
+            str(build_dir),
+        ]
+
+        result = build_main(build_args)
+        assert result == 0, "Sphinx build should succeed"
+
+        # Verify the HTML output
+        index_html = (build_dir / "index.html").read_text()
+
+        # Images with prefixes should be rewritten
+        assert 'src="_images/test_image.png"' in index_html
+        # External images should not be rewritten
+        assert 'src="https://example.com/image.png"' in index_html
+
+        # Original paths with prefixes should not appear
+        assert "docs/images/test_image.png" not in index_html
+        assert "./images/test_image.png" not in index_html
+        assert "source/images/test_image.png" not in index_html
+
     def test_empty_configuration_integration(self, tmp_path: Path) -> None:
         """Test with empty/default configuration."""
         build_main = pytest.importorskip("sphinx.cmd.build").build_main
