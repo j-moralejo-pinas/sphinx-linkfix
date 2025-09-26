@@ -158,4 +158,4 @@ If you have issues with virtual environments, try
 See Also
 ========
 
-- `Contributing <CONTRIBUTING.rst>`_ - How to contribute to the project
+- `Contributing </CONTRIBUTING.rst>`_ - How to contribute to the project

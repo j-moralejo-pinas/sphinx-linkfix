@@ -642,7 +642,7 @@ For detailed guidance on reporting issues, please see the `Issue Reporting`_ sec
 Code of Conduct
 ===============
 
-All contributors are expected to adhere to our `Code of Conduct <CODE_OF_CONDUCT.rst>`_.
+All contributors are expected to adhere to our `Code of Conduct </CODE_OF_CONDUCT.rst>`_.
 
 Thank you for contributing to the sphinx-linkfix project!
 
