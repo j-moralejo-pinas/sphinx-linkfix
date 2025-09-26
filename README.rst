@@ -48,6 +48,26 @@ and rewrites them to use Sphinx's internal referencing system.
     :alt: Documentation after applying sphinx-linkfix
     :align: center
 
+**Links working both on GitHub and Sphinx**
+
+.. image:: docs/images/github_link.gif
+    :alt: Links working on GitHub
+    :align: center
+
+.. image:: docs/images/sphinx_link.gif
+    :alt: Links working in Sphinx
+    :align: center
+
+**Images working both on GitHub and Sphinx**
+
+.. image:: docs/images/github_image.gif
+    :alt: Images working in GitHub
+    :align: center
+
+.. image:: docs/images/sphinx_image.jpg
+    :alt: Images working in Sphinx
+    :align: center
+
 **Quick Start Guide**
 ---------------------
 
@@ -102,3 +122,4 @@ and rewrites them to use Sphinx's internal referencing system.
 - `Authors <AUTHORS.rst>`_ - Project contributors and maintainers
 - `Changelog <CHANGELOG.rst>`_ - Project history and version changes
 - `Code of Conduct <CODE_OF_CONDUCT.rst>`_ - Guidelines for participation and conduct
+- `Read The Docs <https://sphinx-linkfix.readthedocs.io/en/latest/>`_ - Comprehensive online documentation
