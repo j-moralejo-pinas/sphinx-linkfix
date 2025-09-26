@@ -36,50 +36,58 @@ def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
     """
     Remove the leading docs folder prefix from a path string.
 
-    This function handles both relative and absolute paths:
-    - For relative paths like "docs/something", it removes "docs/"
-    - For absolute paths like "/docs/something", it removes "/docs/"
+    This function handles both relative and absolute paths and normalizes
+    different prefix formats:
+    - Prefix "docs", "docs/", "/docs", "/docs/" all work consistently
+    - For relative paths like "docs/something", it removes the docs prefix
+    - For absolute paths like "/docs/something", it removes the docs prefix
 
     Parameters
     ----------
     path_str: str
         The path string to modify.
     docs_relative_path: str
-        The prefix to remove.
+        The prefix to remove (can be in various formats).
 
     Returns
     -------
     str
         The modified path string with the prefix removed.
     """
+    if not path_str or not docs_relative_path:
+        return path_str
+
     # Use PurePosixPath for cross-platform path normalization
     original_path = PurePosixPath(path_str)
-    normalized_prefix = PurePosixPath(docs_relative_path)
-
-    # Convert both to string for prefix matching (PurePosixPath handles normalization)
     original_str = str(original_path)
-    prefix_str = str(normalized_prefix)
 
-    # Handle relative paths (already existing logic)
-    if original_str.startswith(prefix_str):
-        # Remove the prefix and return the remaining path
-        result = original_str[len(prefix_str) :]
-        # Strip leading slash if present and normalize
+    # Normalize the prefix by removing leading/trailing slashes
+    # This makes "docs", "docs/", "/docs", "/docs/" all equivalent
+    normalized_prefix = docs_relative_path.strip("/")
+
+    if not normalized_prefix:
+        return original_str
+
+    # Create both relative and absolute versions of the prefix
+    relative_prefix = normalized_prefix + "/"
+    absolute_prefix = "/" + normalized_prefix + "/"
+
+    # Try to match relative prefix (e.g., "docs/")
+    if original_str.startswith(relative_prefix):
+        result = original_str[len(relative_prefix):]
         result = str(PurePosixPath(result)).lstrip("/")
-        # Return empty string for edge cases like "docs" -> ""
         return "" if result == "." else result
 
-    # Handle absolute paths (new logic)
-    if original_str.startswith("/"):
-        # Create absolute prefix by adding leading slash
-        abs_prefix_str = "/" + prefix_str.lstrip("/")
-        if original_str.startswith(abs_prefix_str):
-            # Remove the absolute prefix and return the remaining path
-            result = original_str[len(abs_prefix_str) :]
-            # Strip leading slash if present and normalize
-            result = str(PurePosixPath(result)).lstrip("/")
-            # Return empty string for edge cases like "/docs" -> ""
-            return "" if result == "." else result
+    # Try to match absolute prefix (e.g., "/docs/")
+    if original_str.startswith(absolute_prefix):
+        result = original_str[len(absolute_prefix):]
+        result = str(PurePosixPath(result)).lstrip("/")
+        return "" if result == "." else result
+
+    # Try to match exact prefix without trailing slash for edge cases
+    # like "docs" matching exactly "docs" or "/docs" matching exactly "/docs"
+    if original_str == normalized_prefix or original_str == "/" + normalized_prefix:
+        return ""
 
     # If no prefix matched, return the normalized path
     return original_str
