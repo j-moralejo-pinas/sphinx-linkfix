@@ -8,6 +8,23 @@ Sources to write the changelog:
 - https://semver.org/
 
 
+v0.2.0 - 2025-09-26
+===================
+
+Added
+-----
+- Support to transform image paths
+- Support for robust source path processing (docs = /docs = docs/ = /docs/)
+- gifs and new link to read the docs
+
+Changed
+-------
+- List of prefixes into a single prefix (the relative paht to the root of the documentaion)
+
+Fixed
+-----
+- Deprecation warning. traverse -> findall
+
 v0.1.4 - 2025-09-25
 ===================
 
