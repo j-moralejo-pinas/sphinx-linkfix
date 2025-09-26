@@ -104,3 +104,33 @@ class TestStripDocsPrefix:
         docs_path = "./"
         assert _strip_docs_prefix("./file.rst", docs_path) == "file.rst"
         assert _strip_docs_prefix("./docs/file.rst", docs_path) == "docs/file.rst"
+
+    def test_absolute_path_prefix_removal(self) -> None:
+        """Test stripping prefix from absolute paths."""
+        docs_path = "docs/"
+        # Absolute paths with prefix should have it stripped
+        assert _strip_docs_prefix("/docs/file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("/docs/subdir/file.rst", docs_path) == "subdir/file.rst"
+        assert _strip_docs_prefix("/docs/api/modules/file.rst", docs_path) == "api/modules/file.rst"
+
+    def test_absolute_path_no_prefix_match(self) -> None:
+        """Test absolute paths that don't match the prefix."""
+        docs_path = "docs/"
+        # Absolute paths without prefix should remain unchanged
+        assert _strip_docs_prefix("/other/file.rst", docs_path) == "/other/file.rst"
+        assert _strip_docs_prefix("/source/file.rst", docs_path) == "/source/file.rst"
+
+    def test_absolute_path_partial_matches(self) -> None:
+        """Test that absolute path partial matches don't strip."""
+        docs_path = "docs/"
+        assert _strip_docs_prefix("/documentation/file.rst", docs_path) == "/documentation/file.rst"
+        assert _strip_docs_prefix("/mydocs/file.rst", docs_path) == "/mydocs/file.rst"
+
+    def test_edge_cases_absolute_and_relative(self) -> None:
+        """Test edge cases with both absolute and relative paths."""
+        docs_path = "docs/"
+        # Test just the prefix itself
+        assert _strip_docs_prefix("docs", docs_path) == ""
+        assert _strip_docs_prefix("/docs", docs_path) == ""
+        assert _strip_docs_prefix("docs/", docs_path) == ""
+        assert _strip_docs_prefix("/docs/", docs_path) == ""

@@ -36,6 +36,10 @@ def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
     """
     Remove the leading docs folder prefix from a path string.
 
+    This function handles both relative and absolute paths:
+    - For relative paths like "docs/something", it removes "docs/"
+    - For absolute paths like "/docs/something", it removes "/docs/"
+
     Parameters
     ----------
     path_str: str
@@ -56,11 +60,26 @@ def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
     original_str = str(original_path)
     prefix_str = str(normalized_prefix)
 
+    # Handle relative paths (already existing logic)
     if original_str.startswith(prefix_str):
         # Remove the prefix and return the remaining path
         result = original_str[len(prefix_str) :]
         # Strip leading slash if present and normalize
-        return str(PurePosixPath(result)).lstrip("/")
+        result = str(PurePosixPath(result)).lstrip("/")
+        # Return empty string for edge cases like "docs" -> ""
+        return "" if result == "." else result
+
+    # Handle absolute paths (new logic)
+    if original_str.startswith("/"):
+        # Create absolute prefix by adding leading slash
+        abs_prefix_str = "/" + prefix_str.lstrip("/")
+        if original_str.startswith(abs_prefix_str):
+            # Remove the absolute prefix and return the remaining path
+            result = original_str[len(abs_prefix_str) :]
+            # Strip leading slash if present and normalize
+            result = str(PurePosixPath(result)).lstrip("/")
+            # Return empty string for edge cases like "/docs" -> ""
+            return "" if result == "." else result
 
     # If no prefix matched, return the normalized path
     return original_str
@@ -91,7 +110,7 @@ class RstImageRewriter(SphinxTransform):
 
         # Process images only
         changed = 0
-        for img in list(self.document.traverse(nodes.image)):
+        for img in list(self.document.findall(nodes.image)):
             uri = img.get("uri")
             if not uri or _is_external(uri):
                 continue
@@ -153,7 +172,7 @@ class RstLinkRewriter(SphinxPostTransform):
         is_latex = builder.name in ("latex", "latexpdf")
         changed = 0
 
-        for ref in list(self.document.traverse(nodes.reference)):
+        for ref in list(self.document.findall(nodes.reference)):
             uri = ref.get("refuri")
             if not uri or _is_external(uri):
                 continue
