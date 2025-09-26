@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from docutils import nodes
 from sphinx.transforms import SphinxTransform
+from sphinx.transforms.post_transforms import SphinxPostTransform
 from sphinx.util import logging
 
 logger = logging.getLogger(__name__)
@@ -67,10 +68,58 @@ def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
     return str(PurePosixPath(original_path))
 
 
-class RstLinkRewriter(SphinxTransform):
-    """Transform to rewrite internal links in reStructuredText files."""
+class RstImageRewriter(SphinxTransform):
+    """Transform to rewrite image paths early in the process."""
 
     default_priority = 210
+    supported_builders: tuple[str, ...] = (
+        "html",
+        "dirhtml",
+        "singlehtml",
+        "epub",
+        "latex",
+        "latexpdf",
+    )
+
+    def apply(self) -> None:
+        """Rewrite image paths in the document."""
+        builder = self.app.builder
+
+        # Check if the current builder is supported
+        if builder.name not in self.supported_builders:
+            return
+
+        prefixes = tuple(
+            self.app.config.sphinx_linkfix_strip_prefixes or ("docs/", "./", "source/")
+        )
+
+        # Process images only
+        changed = 0
+        for img in list(self.document.traverse(nodes.image)):
+            uri = img.get("uri")
+            if not uri or _is_external(uri):
+                continue
+
+            # Strip prefixes from image paths
+            original_uri = uri
+            stripped_uri = _strip_prefixes(uri, prefixes)
+
+            if stripped_uri != original_uri:
+                img["uri"] = stripped_uri
+                changed += 1
+
+        if changed:
+            logger.info(
+                "[link_rewriter] %s: rewrote %d image path(s)",
+                self.env.docname,
+                changed,
+            )
+
+
+class RstLinkRewriter(SphinxPostTransform):
+    """Post-transform to rewrite internal links in reStructuredText files."""
+
+    default_priority = 999
     supported_builders: tuple[str, ...] = (
         "html",
         "dirhtml",
@@ -140,32 +189,16 @@ class RstLinkRewriter(SphinxTransform):
                 ref["refuri"] = new_uri
                 changed += 1
             except Exception as e:  # noqa: BLE001
-                logger.warning(
-                    "[link_rewriter] %s: failed to resolve URI for %s: %s",
+                logger.exception(
+                    "[link_rewriter] %s: failed to resolve URI for %s",
                     self.env.docname,
                     target_doc,
-                    e,
                 )
         return changed
 
-    def _process_images(self, prefixes: tuple[str, ...]) -> int:
-        """Process and rewrite image nodes."""
-        changed = 0
-        for img in list(self.document.traverse(nodes.image)):
-            uri = img.get("uri")
-            if not uri or _is_external(uri):
-                continue
 
-            # Strip prefixes from image paths
-            original_uri = uri
-            stripped_uri = _strip_prefixes(uri, prefixes)
 
-            if stripped_uri != original_uri:
-                img["uri"] = stripped_uri
-                changed += 1
-        return changed
-
-    def apply(self) -> None:
+    def run(self) -> None:
         """Rewrite internal links in the document."""
         builder = self.app.builder
 
@@ -184,20 +217,11 @@ class RstLinkRewriter(SphinxTransform):
         # Extensions to rewrite
         exts = tuple(self.app.config.sphinx_linkfix_extensions or (".rst", ".md", ".txt"))
 
-        # Process references
+        # Process references only (images are handled by RstImageRewriter)
         changed = self._process_references(prefixes, exts)
-
-        # Process images
-        image_changed = self._process_images(prefixes)
 
         if changed:
             logger.info("[link_rewriter] %s: rewrote %d link(s)", self.env.docname, changed)
-        if image_changed:
-            logger.info(
-                "[link_rewriter] %s: rewrote %d image path(s)",
-                self.env.docname,
-                image_changed,
-            )
 
 
 def setup(app: Any) -> dict[str, str | bool]:
@@ -217,5 +241,6 @@ def setup(app: Any) -> dict[str, str | bool]:
     logger.info("[link_rewriter] extension loaded")
     app.add_config_value("sphinx_linkfix_strip_prefixes", (), "env")
     app.add_config_value("sphinx_linkfix_extensions", (), "env")
-    app.add_transform(RstLinkRewriter)
+    app.add_transform(RstImageRewriter)  # Early transform for images
+    app.add_post_transform(RstLinkRewriter)  # Late transform for references
     return {"version": "1.0", "parallel_read_safe": True}

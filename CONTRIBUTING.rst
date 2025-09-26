@@ -538,7 +538,7 @@ Writing Documentation
 - Update relevant ``.rst`` files in the ``docs/`` directory
 - Include examples in docstrings when helpful
 - Keep documentation up to date with code changes
-- Documentation links should be relative and use the GitHub format (e.g., `Name <NAME.rst>`_)
+- Documentation links should be relative and use the GitHub format (e.g., \`Name <NAME.rst>\`_)
 
 Submitting Changes
 ==================
