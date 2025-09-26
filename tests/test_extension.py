@@ -194,24 +194,23 @@ class TestStripDocsPrefix:
         """Test various complex prefix formats."""
         # Deep nesting
         deep_prefix = "project/documentation/source"
-        assert _strip_docs_prefix(
-            "project/documentation/source/index.rst", deep_prefix
-        ) == "index.rst"
-        assert _strip_docs_prefix(
-            "/project/documentation/source/api/module.rst", deep_prefix
-        ) == "api/module.rst"
-        assert _strip_docs_prefix(
-            "other/path/file.rst", deep_prefix
-        ) == "other/path/file.rst"
+        assert (
+            _strip_docs_prefix("project/documentation/source/index.rst", deep_prefix) == "index.rst"
+        )
+        assert (
+            _strip_docs_prefix("/project/documentation/source/api/module.rst", deep_prefix)
+            == "api/module.rst"
+        )
+        assert _strip_docs_prefix("other/path/file.rst", deep_prefix) == "other/path/file.rst"
 
         # Special characters
         special_prefix = "my-project_docs"
-        assert _strip_docs_prefix(
-            "my-project_docs/readme.rst", special_prefix
-        ) == "readme.rst"
-        assert _strip_docs_prefix(
-            "/my-project_docs/installation.rst", special_prefix
-        ) == "installation.rst"
-        assert _strip_docs_prefix(
-            "other-project_docs/file.rst", special_prefix
-        ) == "other-project_docs/file.rst"
+        assert _strip_docs_prefix("my-project_docs/readme.rst", special_prefix) == "readme.rst"
+        assert (
+            _strip_docs_prefix("/my-project_docs/installation.rst", special_prefix)
+            == "installation.rst"
+        )
+        assert (
+            _strip_docs_prefix("other-project_docs/file.rst", special_prefix)
+            == "other-project_docs/file.rst"
+        )

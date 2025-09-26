@@ -74,13 +74,13 @@ def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
 
     # Try to match relative prefix (e.g., "docs/")
     if original_str.startswith(relative_prefix):
-        result = original_str[len(relative_prefix):]
+        result = original_str[len(relative_prefix) :]
         result = str(PurePosixPath(result)).lstrip("/")
         return "" if result == "." else result
 
     # Try to match absolute prefix (e.g., "/docs/")
     if original_str.startswith(absolute_prefix):
-        result = original_str[len(absolute_prefix):]
+        result = original_str[len(absolute_prefix) :]
         result = str(PurePosixPath(result)).lstrip("/")
         return "" if result == "." else result
 
