@@ -29,7 +29,7 @@ class TestSphinxLinkfixIntegration:
         (source_dir / "conf.py").write_text(
             """\
 extensions = ['sphinx_linkfix']
-sphinx_linkfix_strip_prefixes = ('docs/', './', 'source/')
+docs_relative_path = 'docs/'
 sphinx_linkfix_extensions = ('.rst', '.md', '.txt')
 project = 'Test Project'
 master_doc = 'index'
@@ -136,7 +136,7 @@ This is the API reference.
         (source_dir / "conf.py").write_text(
             """\
 extensions = ['sphinx_linkfix']
-sphinx_linkfix_strip_prefixes = ('custom/', 'special/')
+docs_relative_path = 'custom/'
 sphinx_linkfix_extensions = ('.rst', '.mydoc')
 project = 'Custom Test'
 master_doc = 'index'
@@ -207,7 +207,7 @@ Custom extension document.
         (source_dir / "conf.py").write_text(
             """\
 extensions = ['sphinx_linkfix']
-sphinx_linkfix_strip_prefixes = ('docs/', './', 'source/')
+docs_relative_path = 'docs/'
 sphinx_linkfix_extensions = ('.rst', '.md', '.txt')
 project = 'Image Test Project'
 master_doc = 'index'
@@ -226,16 +226,13 @@ Images that should be rewritten:
 .. image:: docs/images/test_image.png
    :alt: Test Image
 
-.. image:: ./images/test_image.png
-   :width: 200
-
-.. image:: source/images/test_image.png
-
 Images that should NOT be rewritten:
 
 .. image:: https://example.com/image.png
 
 .. image:: images/test_image.png
+
+.. image:: other/images/test_image.png
 """
         )
 
@@ -254,15 +251,16 @@ Images that should NOT be rewritten:
         # Verify the HTML output
         index_html = (build_dir / "index.html").read_text()
 
-        # Images with prefixes should be rewritten
+        # Images with docs/ prefix should be rewritten
         assert 'src="_images/test_image.png"' in index_html
         # External images should not be rewritten
         assert 'src="https://example.com/image.png"' in index_html
 
-        # Original paths with prefixes should not appear
+        # Original paths with docs/ prefix should not appear
         assert "docs/images/test_image.png" not in index_html
-        assert "./images/test_image.png" not in index_html
-        assert "source/images/test_image.png" not in index_html
+        # Other paths should remain unchanged (since only docs/ prefix is configured)
+        assert "images/test_image.png" in index_html  # This should still be there
+        assert "other/images/test_image.png" in index_html  # This should still be there
 
     def test_empty_configuration_integration(self, tmp_path: Path) -> None:
         """Test with empty/default configuration."""
@@ -332,13 +330,13 @@ Test page.
         source_dir.mkdir()
         build_dir.mkdir()
 
-        # Configuration with nested prefixes where longest should win
+        # Configuration with single prefix
         (source_dir / "conf.py").write_text(
             """\
 extensions = ['sphinx_linkfix']
-sphinx_linkfix_strip_prefixes = ('docs/', 'docs/api/', 'docs/api/v1/')
+docs_relative_path = 'docs/'
 sphinx_linkfix_extensions = ('.rst',)
-project = 'Longest Match Test'
+project = 'Single Prefix Test'
 master_doc = 'index'
 html_theme = 'basic'
 """
@@ -346,10 +344,10 @@ html_theme = 'basic'
 
         (source_dir / "index.rst").write_text(
             """\
-Longest Prefix Match Test
-=========================
+Single Prefix Test
+==================
 
-These links should use the longest matching prefix:
+These links should have the docs/ prefix stripped:
 
 - `API V1 Endpoint <docs/api/v1/endpoint.rst>`_
 - `API Guide <docs/api/guide.rst>`_
@@ -357,17 +355,23 @@ These links should use the longest matching prefix:
 
 .. toctree::
 
-    endpoint
-    guide
+    api/v1/endpoint
+    api/guide
     readme
 """
         )
 
+        # Create the directory structure
+        api_dir = source_dir / "api"
+        api_v1_dir = api_dir / "v1"
+        api_dir.mkdir()
+        api_v1_dir.mkdir()
+
         # Create the referenced files
-        (source_dir / "endpoint.rst").write_text(
+        (api_v1_dir / "endpoint.rst").write_text(
             "API V1 Endpoint\n===============\n\nEndpoint docs."
         )
-        (source_dir / "guide.rst").write_text("API Guide\n==========\n\nAPI guide docs.")
+        (api_dir / "guide.rst").write_text("API Guide\n==========\n\nAPI guide docs.")
         (source_dir / "readme.rst").write_text(
             "General Docs\n============\n\nGeneral documentation."
         )
@@ -378,12 +382,12 @@ These links should use the longest matching prefix:
 
         index_html = (build_dir / "index.html").read_text()
 
-        # Verify that longest prefixes were used:
-        # "docs/api/v1/endpoint.rst" should become "endpoint.html" (using "docs/api/v1/")
-        assert 'href="endpoint.html"' in index_html
-        # "docs/api/guide.rst" should become "guide.html" (using "docs/api/")
-        assert 'href="guide.html"' in index_html
-        # "docs/readme.rst" should become "readme.html" (using "docs/")
+        # Verify that docs/ prefix was stripped from all links:
+        # "docs/api/v1/endpoint.rst" should become "api/v1/endpoint.html"
+        assert 'href="api/v1/endpoint.html"' in index_html
+        # "docs/api/guide.rst" should become "api/guide.html"
+        assert 'href="api/guide.html"' in index_html
+        # "docs/readme.rst" should become "readme.html"
         assert 'href="readme.html"' in index_html
 
         # Original .rst links should not appear

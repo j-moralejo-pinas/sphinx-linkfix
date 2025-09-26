@@ -32,40 +32,38 @@ def _is_external(href: str) -> bool:
     return bool(parsed.scheme and parsed.netloc)
 
 
-def _strip_prefixes(path_str: str, prefixes: tuple[str, ...]) -> str:
+def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
     """
-    Remove leading folder prefixes from a path string.
+    Remove the leading docs folder prefix from a path string.
 
     Parameters
     ----------
     path_str: str
         The path string to modify.
-    prefixes: tuple[str, ...]
-        A tuple of prefixes to remove.
+    docs_relative_path: str
+        The prefix to remove.
 
     Returns
     -------
     str
-        The modified path string with the prefixes removed.
+        The modified path string with the prefix removed.
     """
-    # For prefix matching, we need to work with the original path
-    # but ensure cross-platform compatibility
-    original_path = path_str.replace("\\", "/")  # Convert backslashes to forward slashes
+    # Use PurePosixPath for cross-platform path normalization
+    original_path = PurePosixPath(path_str)
+    normalized_prefix = PurePosixPath(docs_relative_path)
 
-    # Find the longest matching prefix
-    longest_match = ""
-    for pref in prefixes:
-        normalized_pref = pref.replace("\\", "/")  # Normalize prefix too
-        if original_path.startswith(normalized_pref) and len(normalized_pref) > len(longest_match):
-            longest_match = normalized_pref
+    # Convert both to string for prefix matching (PurePosixPath handles normalization)
+    original_str = str(original_path)
+    prefix_str = str(normalized_prefix)
 
-    if longest_match:
-        result = original_path[len(longest_match) :]
-        # Now normalize the result using PurePosixPath to clean up any .. or . components
-        return str(PurePosixPath(result))
+    if original_str.startswith(prefix_str):
+        # Remove the prefix and return the remaining path
+        result = original_str[len(prefix_str):]
+        # Strip leading slash if present and normalize
+        return str(PurePosixPath(result)).lstrip("/")
 
-    # If no prefix matched, normalize the whole path
-    return str(PurePosixPath(original_path))
+    # If no prefix matched, return the normalized path
+    return original_str
 
 
 class RstImageRewriter(SphinxTransform):
@@ -89,9 +87,7 @@ class RstImageRewriter(SphinxTransform):
         if builder.name not in self.supported_builders:
             return
 
-        prefixes = tuple(
-            self.app.config.sphinx_linkfix_strip_prefixes or ("docs/", "./", "source/")
-        )
+        docs_relative_path = self.app.config.docs_relative_path or "docs/"
 
         # Process images only
         changed = 0
@@ -100,9 +96,9 @@ class RstImageRewriter(SphinxTransform):
             if not uri or _is_external(uri):
                 continue
 
-            # Strip prefixes from image paths
+            # Strip prefix from image paths
             original_uri = uri
-            stripped_uri = _strip_prefixes(uri, prefixes)
+            stripped_uri = _strip_docs_prefix(uri, docs_relative_path)
 
             if stripped_uri != original_uri:
                 img["uri"] = stripped_uri
@@ -151,7 +147,7 @@ class RstLinkRewriter(SphinxPostTransform):
         safe_frag = fragment.replace(".", "-").replace(" ", "-")
         return "".join(c for c in safe_frag if c.isalnum() or c in "-_")
 
-    def _process_references(self, prefixes: tuple[str, ...], exts: tuple[str, ...]) -> int:
+    def _process_references(self, docs_relative_path: str, exts: tuple[str, ...]) -> int:
         """Process and rewrite reference nodes."""
         builder = self.app.builder
         is_latex = builder.name in ("latex", "latexpdf")
@@ -172,8 +168,8 @@ class RstLinkRewriter(SphinxPostTransform):
             if path.suffix not in exts:
                 continue
 
-            # Remove leading folder prefixes like "docs/"
-            path_str = _strip_prefixes(path_str, prefixes)
+            # Remove leading folder prefix
+            path_str = _strip_docs_prefix(path_str, docs_relative_path)
 
             target_doc = str(PurePosixPath(path_str).with_suffix("")).lstrip("./")
             try:
@@ -188,7 +184,7 @@ class RstLinkRewriter(SphinxPostTransform):
 
                 ref["refuri"] = new_uri
                 changed += 1
-            except Exception as e:  # noqa: BLE001
+            except Exception:
                 logger.exception(
                     "[link_rewriter] %s: failed to resolve URI for %s",
                     self.env.docname,
@@ -211,14 +207,12 @@ class RstLinkRewriter(SphinxPostTransform):
             )
             return
 
-        prefixes = tuple(
-            self.app.config.sphinx_linkfix_strip_prefixes or ("docs/", "./", "source/")
-        )
+        docs_relative_path = self.app.config.docs_relative_path or "docs/"
         # Extensions to rewrite
         exts = tuple(self.app.config.sphinx_linkfix_extensions or (".rst", ".md", ".txt"))
 
         # Process references only (images are handled by RstImageRewriter)
-        changed = self._process_references(prefixes, exts)
+        changed = self._process_references(docs_relative_path, exts)
 
         if changed:
             logger.info("[link_rewriter] %s: rewrote %d link(s)", self.env.docname, changed)
@@ -239,7 +233,7 @@ def setup(app: Any) -> dict[str, str | bool]:
         A dictionary with extension metadata.
     """
     logger.info("[link_rewriter] extension loaded")
-    app.add_config_value("sphinx_linkfix_strip_prefixes", (), "env")
+    app.add_config_value("docs_relative_path", "docs/", "env")
     app.add_config_value("sphinx_linkfix_extensions", (), "env")
     app.add_transform(RstImageRewriter)  # Early transform for images
     app.add_post_transform(RstLinkRewriter)  # Late transform for references
