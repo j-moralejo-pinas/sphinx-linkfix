@@ -44,8 +44,8 @@ Quick Start
 
 .. code-block:: python
 
-    # List of path prefixes to strip from links
-    sphinx_linkfix_strip_prefixes = ('docs/', 'source/')
+    # Path prefix to strip from links (default: "docs/")
+    docs_relative_path = 'docs/'
 
     # List of file extensions to process
     sphinx_linkfix_file_extensions = ('.rst', '.md')
@@ -158,4 +158,4 @@ If you have issues with virtual environments, try
 See Also
 ========
 
-- `Contributing <CONTRIBUTING.rst>`_ - How to contribute to the project
+- `Contributing </CONTRIBUTING.rst>`_ - How to contribute to the project

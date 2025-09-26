@@ -538,7 +538,7 @@ Writing Documentation
 - Update relevant ``.rst`` files in the ``docs/`` directory
 - Include examples in docstrings when helpful
 - Keep documentation up to date with code changes
-- Documentation links should be relative and use the GitHub format (e.g., `Name <NAME.rst>`_)
+- Documentation links should be relative and use the GitHub format (e.g., \`Name <NAME.rst>\`_)
 
 Submitting Changes
 ==================
@@ -622,9 +622,7 @@ Understanding the codebase structure will help you contribute effectively:
 .. code-block::
 
     sphinx-linkfix/
-    ├── src/                        # Source code
-    │   ├── sphinx_linkfix/           # Main package
-    │   └── other_package/          # Additional package
+    ├── src/sphinx_linkfix/         # Source code
     ├── tests/                      # Test suite
     ├── docs/                       # Documentation
     └── pyproject.toml              # Project configuration
@@ -644,7 +642,7 @@ For detailed guidance on reporting issues, please see the `Issue Reporting`_ sec
 Code of Conduct
 ===============
 
-All contributors are expected to adhere to our `Code of Conduct <CODE_OF_CONDUCT.rst>`_.
+All contributors are expected to adhere to our `Code of Conduct </CODE_OF_CONDUCT.rst>`_.
 
 Thank you for contributing to the sphinx-linkfix project!
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sphinx_linkfix.extension import _is_external, _strip_prefixes
+from sphinx_linkfix.extension import _is_external, _strip_docs_prefix
 
 
 class TestIsExternal:
@@ -56,68 +56,161 @@ class TestIsExternal:
         assert not _is_external("file-with-dashes.rst")
 
 
-class TestStripPrefixes:
-    """Test the _strip_prefixes function."""
+class TestStripDocsPrefix:
+    """Test the _strip_docs_prefix function."""
 
-    def test_strip_single_prefix(self) -> None:
-        """Test stripping a single prefix."""
-        prefixes = ("docs/",)
-        assert _strip_prefixes("docs/file.rst", prefixes) == "file.rst"
-        assert _strip_prefixes("docs/subdir/file.rst", prefixes) == "subdir/file.rst"
+    def test_strip_docs_prefix(self) -> None:
+        """Test stripping the docs prefix."""
+        docs_path = "docs/"
+        assert _strip_docs_prefix("docs/file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("docs/subdir/file.rst", docs_path) == "subdir/file.rst"
 
-    def test_strip_multiple_prefixes(self) -> None:
-        """Test stripping from multiple possible prefixes."""
-        prefixes = ("docs/", "source/", "./")
-        assert _strip_prefixes("docs/file.rst", prefixes) == "file.rst"
-        assert _strip_prefixes("source/file.rst", prefixes) == "file.rst"
-        assert _strip_prefixes("./file.rst", prefixes) == "file.rst"
+    def test_strip_custom_prefix(self) -> None:
+        """Test stripping a custom prefix."""
+        docs_path = "source/"
+        assert _strip_docs_prefix("source/file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("source/subdir/file.rst", docs_path) == "subdir/file.rst"
 
     def test_no_matching_prefix(self) -> None:
-        """Test when no prefix matches."""
-        prefixes = ("docs/", "source/")
-        assert _strip_prefixes("other/file.rst", prefixes) == "other/file.rst"
-        assert _strip_prefixes("file.rst", prefixes) == "file.rst"
-
-    def test_longest_matching_prefix_wins(self) -> None:
-        """Test that the longest matching prefix is used."""
-        prefixes = ("docs/", "docs/sub/")
-        # Should use "docs/sub/" (longer) instead of "docs/" (shorter)
-        assert _strip_prefixes("docs/sub/file.rst", prefixes) == "file.rst"
-
-        # Test with different order - longest should still win
-        prefixes_reversed = ("docs/sub/", "docs/")
-        assert _strip_prefixes("docs/sub/file.rst", prefixes_reversed) == "file.rst"
-
-        # Test with multiple nested prefixes
-        prefixes_complex = ("docs/", "docs/api/", "docs/api/v1/")
-        assert _strip_prefixes("docs/api/v1/endpoints.rst", prefixes_complex) == "endpoints.rst"
-
-        # Shorter prefix should be used when longer doesn't match
-        assert _strip_prefixes("docs/guide/intro.rst", prefixes_complex) == "guide/intro.rst"
-
-    def test_windows_path_normalization(self) -> None:
-        """Test that Windows paths are normalized to POSIX."""
-        prefixes = ("docs/",)
-        # Windows-style paths are normalized by PurePosixPath, but backslashes in string
-        # won't match forward slash prefixes on Linux/POSIX systems
-        assert _strip_prefixes("docs/file.rst", prefixes) == "file.rst"
-        assert _strip_prefixes("docs/subdir/file.rst", prefixes) == "subdir/file.rst"
-
-    def test_empty_prefix_list(self) -> None:
-        """Test with empty prefix list."""
-        prefixes: tuple[str, ...] = ()
-        assert _strip_prefixes("docs/file.rst", prefixes) == "docs/file.rst"
+        """Test when prefix doesn't match."""
+        docs_path = "docs/"
+        assert _strip_docs_prefix("other/file.rst", docs_path) == "other/file.rst"
+        assert _strip_docs_prefix("file.rst", docs_path) == "file.rst"
 
     def test_partial_matches(self) -> None:
         """Test that partial matches don't strip."""
-        prefixes = ("docs/",)
-        assert _strip_prefixes("documentation/file.rst", prefixes) == "documentation/file.rst"
-        assert _strip_prefixes("mydocs/file.rst", prefixes) == "mydocs/file.rst"
+        docs_path = "docs/"
+        assert _strip_docs_prefix("documentation/file.rst", docs_path) == "documentation/file.rst"
+        assert _strip_docs_prefix("mydocs/file.rst", docs_path) == "mydocs/file.rst"
+
+    def test_windows_path_normalization(self) -> None:
+        """Test that Windows paths are normalized to POSIX."""
+        docs_path = "docs/"
+        assert _strip_docs_prefix("docs/file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("docs/subdir/file.rst", docs_path) == "subdir/file.rst"
 
     def test_complex_paths(self) -> None:
         """Test complex path scenarios."""
-        prefixes = ("docs/", "./", "source/")
-        assert _strip_prefixes("docs/api/modules/file.rst", prefixes) == "api/modules/file.rst"
-        # "./" prefix matches and is stripped, leaving "docs/file.rst"
-        assert _strip_prefixes("./docs/file.rst", prefixes) == "docs/file.rst"
-        assert _strip_prefixes("source/../other/file.rst", prefixes) == "../other/file.rst"
+        docs_path = "docs/"
+        assert _strip_docs_prefix("docs/api/modules/file.rst", docs_path) == "api/modules/file.rst"
+
+    def test_empty_prefix(self) -> None:
+        """Test with empty prefix."""
+        docs_path = ""
+        assert _strip_docs_prefix("docs/file.rst", docs_path) == "docs/file.rst"
+
+    def test_current_directory_prefix(self) -> None:
+        """Test with current directory prefix."""
+        docs_path = "./"
+        assert _strip_docs_prefix("./file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("./docs/file.rst", docs_path) == "docs/file.rst"
+
+    def test_absolute_path_prefix_removal(self) -> None:
+        """Test stripping prefix from absolute paths."""
+        docs_path = "docs/"
+        # Absolute paths with prefix should have it stripped
+        assert _strip_docs_prefix("/docs/file.rst", docs_path) == "file.rst"
+        assert _strip_docs_prefix("/docs/subdir/file.rst", docs_path) == "subdir/file.rst"
+        assert _strip_docs_prefix("/docs/api/modules/file.rst", docs_path) == "api/modules/file.rst"
+
+    def test_absolute_path_no_prefix_match(self) -> None:
+        """Test absolute paths that don't match the prefix."""
+        docs_path = "docs/"
+        # Absolute paths without prefix should remain unchanged
+        assert _strip_docs_prefix("/other/file.rst", docs_path) == "/other/file.rst"
+        assert _strip_docs_prefix("/source/file.rst", docs_path) == "/source/file.rst"
+
+    def test_absolute_path_partial_matches(self) -> None:
+        """Test that absolute path partial matches don't strip."""
+        docs_path = "docs/"
+        assert _strip_docs_prefix("/documentation/file.rst", docs_path) == "/documentation/file.rst"
+        assert _strip_docs_prefix("/mydocs/file.rst", docs_path) == "/mydocs/file.rst"
+
+    def test_edge_cases_absolute_and_relative(self) -> None:
+        """Test edge cases with both absolute and relative paths."""
+        docs_path = "docs/"
+        # Test just the prefix itself
+        assert _strip_docs_prefix("docs", docs_path) == ""
+        assert _strip_docs_prefix("/docs", docs_path) == ""
+        assert _strip_docs_prefix("docs/", docs_path) == ""
+        assert _strip_docs_prefix("/docs/", docs_path) == ""
+
+    def test_different_prefix_formats(self) -> None:
+        """Test that different prefix formats work consistently."""
+        test_paths = [
+            ("docs/file.rst", "file.rst"),
+            ("/docs/file.rst", "file.rst"),
+            ("docs/subfolder/file.rst", "subfolder/file.rst"),
+            ("/docs/subfolder/file.rst", "subfolder/file.rst"),
+            ("other/file.rst", "other/file.rst"),
+            ("/other/file.rst", "/other/file.rst"),
+            ("docs", ""),
+            ("/docs", ""),
+        ]
+
+        # Test all prefix formats: docs, docs/, /docs, /docs/
+        prefix_formats = ["docs", "docs/", "/docs", "/docs/"]
+
+        for prefix in prefix_formats:
+            for input_path, expected in test_paths:
+                result = _strip_docs_prefix(input_path, prefix)
+                assert result == expected, (
+                    f"Failed with prefix '{prefix}' and path '{input_path}': "
+                    f"expected '{expected}', got '{result}'"
+                )
+
+    def test_empty_and_invalid_prefixes(self) -> None:
+        """Test handling of empty and invalid prefixes."""
+        # Empty prefix should return original path
+        assert _strip_docs_prefix("docs/file.rst", "") == "docs/file.rst"
+        assert _strip_docs_prefix("/docs/file.rst", "") == "/docs/file.rst"
+
+        # Prefix with only slashes should return original path
+        assert _strip_docs_prefix("docs/file.rst", "/") == "docs/file.rst"
+        assert _strip_docs_prefix("docs/file.rst", "//") == "docs/file.rst"
+
+        # Empty path should return empty path
+        assert _strip_docs_prefix("", "docs/") == ""
+
+    def test_multi_level_prefixes(self) -> None:
+        """Test handling of multi-level prefixes like 'src/docs'."""
+        # Basic multi-level prefix
+        prefix = "src/docs"
+        assert _strip_docs_prefix("src/docs/file.rst", prefix) == "file.rst"
+        assert _strip_docs_prefix("/src/docs/file.rst", prefix) == "file.rst"
+        assert _strip_docs_prefix("src/docs/subfolder/file.rst", prefix) == "subfolder/file.rst"
+        assert _strip_docs_prefix("/src/docs/subfolder/file.rst", prefix) == "subfolder/file.rst"
+
+        # Should not match partial paths
+        assert _strip_docs_prefix("docs/file.rst", prefix) == "docs/file.rst"
+        assert _strip_docs_prefix("src/other/file.rst", prefix) == "src/other/file.rst"
+        assert _strip_docs_prefix("other/src/docs/file.rst", prefix) == "other/src/docs/file.rst"
+
+        # Edge cases
+        assert _strip_docs_prefix("src/docs", prefix) == ""
+        assert _strip_docs_prefix("/src/docs", prefix) == ""
+
+    def test_complex_prefix_scenarios(self) -> None:
+        """Test various complex prefix formats."""
+        # Deep nesting
+        deep_prefix = "project/documentation/source"
+        assert (
+            _strip_docs_prefix("project/documentation/source/index.rst", deep_prefix) == "index.rst"
+        )
+        assert (
+            _strip_docs_prefix("/project/documentation/source/api/module.rst", deep_prefix)
+            == "api/module.rst"
+        )
+        assert _strip_docs_prefix("other/path/file.rst", deep_prefix) == "other/path/file.rst"
+
+        # Special characters
+        special_prefix = "my-project_docs"
+        assert _strip_docs_prefix("my-project_docs/readme.rst", special_prefix) == "readme.rst"
+        assert (
+            _strip_docs_prefix("/my-project_docs/installation.rst", special_prefix)
+            == "installation.rst"
+        )
+        assert (
+            _strip_docs_prefix("other-project_docs/file.rst", special_prefix)
+            == "other-project_docs/file.rst"
+        )

@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 extensions = ['sphinx_linkfix.extension']
 
 # sphinx-linkfix configuration
-sphinx_linkfix_strip_prefixes = ('docs/', './', 'source/', 'manual/')
+docs_relative_path = 'docs/'
 sphinx_linkfix_extensions = ('.rst', '.md', '.txt')
 
 # Basic Sphinx configuration
@@ -143,8 +143,8 @@ You can customize the extension behavior:
 
 .. code-block:: python
 
-    # Prefixes to strip from links
-    sphinx_linkfix_strip_prefixes = ('docs/', './', 'source/')
+    # Path prefix to strip from links (default: "docs/")
+    docs_relative_path = 'docs/'
 
     # File extensions to process
     sphinx_linkfix_extensions = ('.rst', '.md', '.txt')
