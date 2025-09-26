@@ -58,7 +58,7 @@ def _strip_docs_prefix(path_str: str, docs_relative_path: str) -> str:
 
     if original_str.startswith(prefix_str):
         # Remove the prefix and return the remaining path
-        result = original_str[len(prefix_str):]
+        result = original_str[len(prefix_str) :]
         # Strip leading slash if present and normalize
         return str(PurePosixPath(result)).lstrip("/")
 
@@ -191,8 +191,6 @@ class RstLinkRewriter(SphinxPostTransform):
                     target_doc,
                 )
         return changed
-
-
 
     def run(self) -> None:
         """Rewrite internal links in the document."""
